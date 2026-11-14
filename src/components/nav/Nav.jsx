@@ -17,8 +17,8 @@ export default async function Nav() {
     console.log(session)
 
     // const session = {
-    //     email: "dom@moodify.com",
-    //     name: "Dominik Gilg",
+    //     email: "demo@example.com",
+    //     name: "Demo User",
     //     image: ""
     // };
 
