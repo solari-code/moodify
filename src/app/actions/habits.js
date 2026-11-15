@@ -1,84 +1,53 @@
 "use server"
 
-import { auth } from "@/../auth"
-import { ObjectId } from 'mongodb'
-import clientPromise from '@/lib/mongodb'
+import { revalidatePath } from "next/cache"
+import { getStore } from "@/lib/store"
+import { requireUserId } from "@/lib/requireUser"
+import { normalizeHabitName } from "@/lib/validation"
 
 export async function addHabit(habit) {
 
-    const session = await auth();
+    const userId = await requireUserId();
+    const { name, error } = normalizeHabitName(habit?.name);
 
-    if (!session || !session.user?.id) {
-        throw new Error("Not authenticated")
+    if (error) {
+        return { success: false, message: error }
     }
 
-    const client = await clientPromise
-    const db = client.db("moodify")
-
     try {
-        const result = await db.collection("habits").updateOne(
-            { userId: new ObjectId(session.user.id) },
-            {
-                $push: { habits: habit },
-                $setOnInsert: { createdAt: new Date() },
-                $set: { updatedAt: new Date() }
-            },
-            { upsert: true }
-        )
+        const store = getStore();
+        const habits = await store.getHabits(userId);
 
-        if (result.acknowledged) {
-            return { success: true, message: "Habit added successfully" }
-        } else {
-            throw new Error("Failed to add habit")
+        if (habits.some((h) => h.name.toLowerCase() === name.toLowerCase())) {
+            return { success: false, message: "This habit already exists" }
         }
+
+        await store.addHabit(userId, { name });
+        // see revalidateDashboard in entries.js
+        revalidatePath("/dashboard");
+        // the stored habit (name trimmed), so the client shows exactly what was saved
+        return { success: true, message: "Habit added successfully", habit: { name } }
     } catch (error) {
         console.error("Error adding habit:", error)
         throw error
     }
-
-
 }
 
+// Always returns an array (empty for new users).
 export async function getHabits() {
 
-    const session = await auth();
-
-    if (!session || !session.user?.id) {
-        throw new Error("Not authenticated")
-    }
-
-    const client = await clientPromise
-    const db = client.db("moodify")
-
-    const habits = await db.collection("habits").findOne({ userId: new ObjectId(session.user.id) })
-    return habits || []
+    const userId = await requireUserId();
+    return getStore().getHabits(userId)
 }
 
 export async function removeHabit(habitName) {
 
-    const session = await auth();
-
-    if (!session || !session.user?.id) {
-        throw new Error("Not authenticated")
-    }
-
-    const client = await clientPromise
-    const db = client.db("moodify")
+    const userId = await requireUserId();
 
     try {
-        const result = await db.collection("habits").updateOne(
-            { userId: new ObjectId(session.user.id) },
-            {
-                $pull: { habits: { name: habitName } },
-                $set: { updatedAt: new Date() }
-            }
-        )
-
-        if (result.acknowledged) {
-            return { success: true, message: "Habit removed successfully" }
-        } else {
-            throw new Error("Failed to remove habit")
-        }
+        await getStore().removeHabit(userId, habitName);
+        revalidatePath("/dashboard");
+        return { success: true, message: "Habit removed successfully" }
     } catch (error) {
         console.error("Error removing habit:", error)
         throw error

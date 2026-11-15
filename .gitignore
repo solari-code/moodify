@@ -25,6 +25,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# local mode data (JSON file storage)
+/.data/
+
 # local env files
 .env*.local
 

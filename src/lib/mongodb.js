@@ -1,10 +1,5 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
 
-if (!process.env.MONGODB_URI) {
-    throw new Error('Invalid/Missing environment variable: "MONGO_URI"');
-}
-
-const uri = process.env.MONGODB_URI;
 const options = {
     serverApi: {
         version: ServerApiVersion.v1,
@@ -13,21 +8,23 @@ const options = {
     },
 };
 
-let client;
-let clientPromise;
-
-if (process.env.NODE_ENV === "development") {
-    let globalWithMongo = global;
-    globalWithMongo._mongoClientPromise = undefined;
-
-    if (!globalWithMongo._mongoClientPromise) {
-        client = new MongoClient(uri, options);
-        globalWithMongo._mongoClientPromise = client.connect();
+// Returns a shared MongoClient, created on first use instead of at import
+// time, so the app can start without MONGODB_URI (local mode never calls this).
+//
+// The client is not connected explicitly: the driver connects automatically
+// on the first database operation. Connection errors then surface in the code
+// that actually needs the database (and are retried on the next operation)
+// instead of becoming unhandled promise rejections.
+//
+// The client is cached on globalThis so that hot reloads in development reuse
+// it instead of opening a new connection each time.
+export function getMongoClient() {
+    if (!globalThis._mongoClient) {
+        const uri = process.env.MONGODB_URI;
+        if (!uri) {
+            throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
+        }
+        globalThis._mongoClient = new MongoClient(uri, options);
     }
-    clientPromise = globalWithMongo._mongoClientPromise;
-} else {
-    client = new MongoClient(uri, options);
-    clientPromise = client.connect();
+    return globalThis._mongoClient;
 }
-
-export default clientPromise;

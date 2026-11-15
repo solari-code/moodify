@@ -1,62 +1,67 @@
 "use server"
 
-import { auth } from "@/../auth"
-import { ObjectId } from 'mongodb'
-import clientPromise from '@/lib/mongodb'
-import { formatDateToUTC } from "@/lib/utils"
+import { revalidatePath } from "next/cache"
+import { getStore } from "@/lib/store"
+import { requireUserId } from "@/lib/requireUser"
+import { isValidDateKey } from "@/lib/dates"
+import { validateEntryInput } from "@/lib/validation"
 
+// One entry per user and day. Days are "YYYY-MM-DD" keys created in the
+// browser (see src/lib/dates.js).
+//
+// Invalid input returns { success: false, message } so the UI can show it;
+// missing authentication and storage failures throw.
 
-export async function getEntry({ date }) {
-
-    const session = await auth();
-
-    if (!session || !session.user?.id) {
-        throw new Error("Not authenticated")
-    }
-
-    let dateFormatted = formatDateToUTC(date);
-
-    const client = await clientPromise
-    const db = client.db("moodify")
-
-    const entry = await db.collection("entries").findOne({ userId: new ObjectId(session.user.id), date: dateFormatted })
-    return entry || {}
+// The dashboard keeps its own state after changes, but the browser also caches
+// the page for back/forward navigation. Without this, going back to the
+// dashboard would show the data from the last full page load.
+function revalidateDashboard() {
+    revalidatePath("/dashboard")
 }
 
-export async function addEntry({ date, mood, habits = [] }) {
+// All entries of the signed-in user, oldest first.
+export async function getEntries() {
+    const userId = await requireUserId();
+    return getStore().getEntries(userId)
+}
 
-    const session = await auth();
+// Saves the entry for `date`. If the day already has an entry, it is overwritten.
+// input: { date: "YYYY-MM-DD", mood: 0-10, habits: [names of habits done] }
+export async function saveEntry(input) {
+    const userId = await requireUserId();
 
-    if (!session || !session.user?.id) {
-        throw new Error("Not authenticated")
+    const result = validateEntryInput(input);
+    if (!result.ok) {
+        return { success: false, message: result.message }
     }
-
-    let dateFormatted = formatDateToUTC(date);
-
-    const client = await clientPromise
-    const db = client.db("moodify")
-
-    const entry = { mood, date, habits }
 
     try {
-        const result = await db.collection("entries").updateOne(
-            { userId: new ObjectId(session.user.id), date: dateFormatted },
-            {
-                $push: entry,
-                $setOnInsert: { createdAt: new Date(), userId: session.user.id },
-                $set: { updatedAt: new Date() }
-            },
-            { upsert: true }
-        )
-
-        if (result.acknowledged) {
-            return { success: true, message: "Entry added successfully" }
-        } else {
-            throw new Error("Failed to add entry")
-        }
+        const entry = await getStore().saveEntry(userId, result.value);
+        revalidateDashboard();
+        return { success: true, entry }
     } catch (error) {
-        console.error("Error adding entry:", error)
+        console.error("Error saving entry:", error)
         throw error
     }
+}
 
+// Deletes the whole entry for `date`.
+export async function deleteEntry(date) {
+    const userId = await requireUserId();
+
+    if (!isValidDateKey(date)) {
+        return { success: false, message: "Date must be a valid day in the format YYYY-MM-DD" }
+    }
+
+    try {
+        const deleted = await getStore().deleteEntry(userId, date);
+        revalidateDashboard();
+        return deleted
+            ? { success: true }
+            // notFound: e.g. already deleted in another tab; the UI can drop it too
+            : { success: false, notFound: true, message: "There is no entry for this day" }
+    } catch (error) {
+        console.error("Error deleting entry:", error)
+        throw error
+    }
 }

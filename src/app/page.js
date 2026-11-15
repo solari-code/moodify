@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CalendarDays, ListChecks, LineChart, Flame, Smile, ArrowRight } from "lucide-react";
+import ButtonSignIn from "@/components/nav/ButtonSignIn";
 
 export const metadata = {
   title: "Moodify – Track your mood and habits",
@@ -68,10 +69,6 @@ export default async function Home() {
   const session = await auth();
   const signedIn = !!session?.user;
 
-  const primaryAction = signedIn
-    ? { href: "/dashboard", label: "Open your dashboard" }
-    : { href: "/api/auth/signin", label: "Sign in with GitHub" };
-
   return (
     <div className="pt-16 font-[family-name:var(--font-geist-sans)]">
       {/* HERO */}
@@ -89,12 +86,18 @@ export default async function Home() {
               tick off your habits, and see how both change over time.
             </p>
             <div className="flex flex-col items-center gap-3 sm:flex-row md:justify-start">
-              <Button asChild size="lg">
-                <Link href={primaryAction.href}>
-                  {primaryAction.label}
+              {signedIn ? (
+                <Button asChild size="lg">
+                  <Link href="/dashboard">
+                    Open your dashboard
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              ) : (
+                <ButtonSignIn size="lg">
                   <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+                </ButtonSignIn>
+              )}
               <Button asChild size="lg" variant="ghost">
                 <Link href="#how-it-works">How it works</Link>
               </Button>
@@ -190,9 +193,13 @@ export default async function Home() {
           <p className="mx-auto max-w-xl text-muted-foreground">
             It takes less than a minute. After a few weeks you&apos;ll start to see which habits lift your mood.
           </p>
-          <Button asChild size="lg">
-            <Link href={primaryAction.href}>{primaryAction.label}</Link>
-          </Button>
+          {signedIn ? (
+            <Button asChild size="lg">
+              <Link href="/dashboard">Open your dashboard</Link>
+            </Button>
+          ) : (
+            <ButtonSignIn size="lg" />
+          )}
         </div>
       </section>
 

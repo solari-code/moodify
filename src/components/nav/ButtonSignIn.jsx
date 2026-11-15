@@ -1,14 +1,25 @@
-"use client"
-
 import { Button } from "@/components/ui/button";
+import { signInAction } from "@/app/actions/auth";
+import { isLocalMode } from "@/lib/mode";
 
-function handleSignIn() {
-    console.log('SIGN IN')
-}
+// Server component: the label depends on the mode, and the form submits
+// to a server action (demo login in local mode, GitHub otherwise).
+//
+// compact: short label for the navigation bar
+// children: extra content after the label (e.g. an icon)
+export default function ButtonSignIn({ compact = false, className, children, ...buttonProps }) {
 
-export default function ButtonSignIn() {
+    const localMode = isLocalMode();
+    const label = localMode
+        ? (compact ? "Demo login" : "Continue as demo user")
+        : (compact ? "Sign In" : "Sign in with GitHub");
+
     return (
-        <Button onClick={handleSignIn}>Sign In</Button>
+        <form action={signInAction} className={className}>
+            <Button type="submit" {...buttonProps}>
+                {label}
+                {children}
+            </Button>
+        </form>
     )
-
 }

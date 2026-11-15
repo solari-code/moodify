@@ -7,20 +7,16 @@ import { Smile } from "lucide-react"
 import ButtonSignIn from "./ButtonSignIn";
 import logo from '@/img/moodify_logo.png'
 
+import { Badge } from "@/components/ui/badge";
+import { isLocalMode } from "@/lib/mode";
+
 import { auth } from "@/../auth";
 
 
 export default async function Nav() {
 
     const session = await auth()
-
-    console.log(session)
-
-    // const session = {
-    //     email: "demo@example.com",
-    //     name: "Demo User",
-    //     image: ""
-    // };
+    const localMode = isLocalMode()
 
     return (
 
@@ -36,6 +32,11 @@ export default async function Nav() {
                             {/* <div className="max-w-150px"><Image src={logo} width={3000} height={1000} layout="responsive" ></Image></div> */}
                         </Link>
                         <span className="text-lg font-semibold">Moodify</span>
+                        {localMode && (
+                            <Badge variant="outline" title="Demo login, data is stored in .data/ on this machine">
+                                Local mode
+                            </Badge>
+                        )}
                     </div>
 
                     {/* Desktop Navigation */}
@@ -47,9 +48,7 @@ export default async function Nav() {
                             <UserMenu user={session.user} />
                         </>
                         ) : (
-                            <Link href="/api/auth/signin">
-                                <ButtonSignIn />
-                            </Link>
+                            <ButtonSignIn compact />
                         )}
                     </div>
 
