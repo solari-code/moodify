@@ -1,63 +1,61 @@
-import { SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import NavSheet from "./NavSheet"
+import NavLink from "./NavLink"
+import UserAvatar from "./UserAvatar"
+import LocalModeBadge from "./LocalModeBadge"
 import { Button } from "@/components/ui/button"
-import { Smile, Menu, LogOut, User } from "lucide-react"
-import Link from "next/link"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Separator } from "@/components/ui/separator"
+import { Menu, LogOut, LayoutDashboard } from "lucide-react"
+import { Logo } from "@/components/brand/Logo"
 import ButtonSignIn from "./ButtonSignIn"
 import { signOutAction } from "@/app/actions/auth"
 
 
-export default function MobileNav({ user }) {
-
-    let email = user?.email
-    let image = user?.image
-    let name = user?.name
-    // GitHub users don't always have a display name
-    let initial = (name || email || "?").charAt(0).toUpperCase()
+export default function MobileNav({ user, localMode = false }) {
 
     return (
         <NavSheet>
             <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative group">
-                    <Menu className="h-6 w-6 text-primary group-hover:text-primary/80 transition-colors" />
-                    <span className="sr-only">Toggle navigation menu</span>
-                    <span className="absolute inset-x-0 bottom-0 h-px bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-150 ease-in-out" />
+                <Button variant="ghost" size="icon" aria-label="Open navigation menu">
+                    <Menu className="h-5 w-5" />
                 </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-                <nav className="flex flex-col space-y-4">
-                    <div className="flex items-center space-x-4 mb-4">
-                        <Smile className="h-6 w-6 text-primary" />
-                        {/* SheetTitle gives the dialog its accessible name */}
-                        <SheetTitle>Moodify</SheetTitle>
-                    </div>
+            {/* focus the first menu entry (Dashboard or sign-in), not "Sign Out" */}
+            <SheetContent side="left" className="flex w-[300px] flex-col gap-6 sm:w-[360px]" initialFocus="nav a, nav button">
+                {/* SheetTitle gives the dialog its accessible name */}
+                <SheetTitle className="flex items-center">
+                    <Logo />
+                </SheetTitle>
+                <SheetDescription className="sr-only">Navigation and account</SheetDescription>
+
+                <nav aria-label="Mobile" className="flex flex-1 flex-col gap-4">
                     {user ? (
                         <>
-                            <div className="flex items-center space-x-4">
-                                <Avatar>
-                                    <AvatarImage src={image} alt="User avatar image" />
-                                    <AvatarFallback>{initial}</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <p className="text-sm font-medium">{name}</p>
-                                    <p className="text-xs text-muted-foreground">{email}</p>
+                            <div className="flex items-center gap-3 rounded-xl bg-card p-3 shadow-soft">
+                                <UserAvatar user={user} />
+                                <div className="min-w-0">
+                                    {user.name && <p className="truncate text-sm font-medium">{user.name}</p>}
+                                    {user.email && <p className="truncate text-xs text-muted-foreground">{user.email}</p>}
                                 </div>
                             </div>
-                            <Link href="/dashboard" className="text-sm font-medium">
+                            <NavLink href="/dashboard" className="px-4 py-2.5">
+                                <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
                                 Dashboard
-                            </Link>
+                            </NavLink>
+                            <Separator />
                             <form action={signOutAction}>
-                                <Button type="submit" className="justify-start">
+                                <Button type="submit" variant="outline" className="w-full">
                                     <LogOut className="mr-2 h-4 w-4" />
                                     Sign Out
                                 </Button>
                             </form>
                         </>
                     ) : (
-                        <ButtonSignIn compact />
+                        <ButtonSignIn compact className="[&>button]:w-full" />
                     )}
                 </nav>
+
+                {localMode && <LocalModeBadge className="self-start" />}
             </SheetContent>
         </NavSheet>
     )

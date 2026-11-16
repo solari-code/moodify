@@ -1,6 +1,6 @@
 import { test, describe, afterEach } from "node:test"
 import assert from "node:assert/strict"
-import { toDateKey, fromDateKey, isValidDateKey, latestAllowedDateKey, isFutureDateKey, addDays } from "../src/lib/dates.js"
+import { toDateKey, fromDateKey, isValidDateKey, latestAllowedDateKey, isFutureDateKey, addDays, dayOfWeek, startOfWeek } from "../src/lib/dates.js"
 
 // Node applies changes to process.env.TZ immediately, so each test can
 // simulate a user (browser) in a different timezone.
@@ -102,5 +102,34 @@ describe("addDays", () => {
             assert.equal(addDays("2024-03-10", 1), "2024-03-11", tz)  // US spring forward
             assert.equal(addDays("2018-11-04", -1), "2018-11-03", tz) // Sao Paulo midnight switch
         }
+    })
+})
+
+describe("dayOfWeek", () => {
+    test("0 = Sunday … 6 = Saturday", () => {
+        assert.equal(dayOfWeek("2024-05-12"), 0) // Sunday
+        assert.equal(dayOfWeek("2024-05-13"), 1) // Monday
+        assert.equal(dayOfWeek("2024-05-18"), 6) // Saturday
+    })
+
+    test("doesn't depend on the timezone", () => {
+        for (const tz of ["Pacific/Kiritimati", "Pacific/Pago_Pago", "Europe/Berlin"]) {
+            process.env.TZ = tz
+            assert.equal(dayOfWeek("2024-02-29"), 4) // Thursday
+        }
+    })
+})
+
+describe("startOfWeek", () => {
+    test("Monday by default", () => {
+        assert.equal(startOfWeek("2024-05-10"), "2024-05-06") // Friday -> Monday
+        assert.equal(startOfWeek("2024-05-06"), "2024-05-06") // Monday stays
+        assert.equal(startOfWeek("2024-05-12"), "2024-05-06") // Sunday belongs to the week before
+    })
+
+    test("other week starts and month/year boundaries", () => {
+        assert.equal(startOfWeek("2024-05-12", 0), "2024-05-12") // Sunday start
+        assert.equal(startOfWeek("2024-05-11", 0), "2024-05-05")
+        assert.equal(startOfWeek("2025-01-01"), "2024-12-30")
     })
 })

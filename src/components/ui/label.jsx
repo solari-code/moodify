@@ -6,16 +6,25 @@ import { cva } from "class-variance-authority";
 
 import { cn } from "@/lib/utils"
 
+// size: "sm" (default, form labels) or "m" (section labels in cards)
 const labelVariants = cva(
-  " font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+  "font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+  {
+    variants: {
+      size: {
+        sm: "text-sm",
+        m: "text-base",
+      },
+    },
+    defaultVariants: {
+      size: "sm",
+    },
+  }
 )
 
-const Label = React.forwardRef(({ className, ...props }, ref) => {
-  let textSize = " text-" + (props.size || "sm")
-  return (
-    <LabelPrimitive.Root ref={ref} className={cn(labelVariants(), textSize, className)} {...props} />
-  )
-})
+const Label = React.forwardRef(({ className, size, ...props }, ref) => (
+  <LabelPrimitive.Root ref={ref} className={cn(labelVariants({ size }), className)} {...props} />
+))
 Label.displayName = LabelPrimitive.Root.displayName
 
 export { Label }

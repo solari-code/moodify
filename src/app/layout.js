@@ -2,16 +2,21 @@ import localFont from "next/font/local";
 import "./globals.css";
 
 import Nav from "@/components/nav/Nav";
+import Footer from "@/components/nav/Footer";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+// Body text: Figtree, a friendly, open sans-serif.
+const fontSans = localFont({
+  src: "./fonts/FigtreeVF-latin.woff2",
+  variable: "--font-sans",
+  weight: "300 900",
+  display: "swap",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
+// Headings: Fraunces with its "soft" axis (rounded terminals), see globals.css.
+const fontHeading = localFont({
+  src: "./fonts/FrauncesSoftVF-latin.woff2",
+  variable: "--font-heading",
   weight: "100 900",
+  display: "swap",
 });
 
 export const metadata = {
@@ -24,11 +29,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${fontSans.variable} ${fontHeading.variable} font-sans antialiased`}
       >
         <Nav />
         <main>{children}</main>
-        <footer></footer>
+        <Footer />
       </body>
     </html>
   );

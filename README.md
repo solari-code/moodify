@@ -1,15 +1,15 @@
 # moodify
 
-A small mood and habit tracker built with Next.js 16 and React 19. Each day you log how you feel on a slider and tick off the habits you did. The dashboard shows a calendar, your daily entry and an overview with average mood and habit streaks.
-
-This is an early version: the core tracking works, but many features are still basic.
+A calm mood and habit tracker built with Next.js 16 and React 19. Each day you check in with yourself: pick how the day felt on a scale from 0 to 10 and tick off the habits you did. Over time, a mood chart and a habit heatmap show your patterns.
 
 ## Features
 
-- **Day tracker:** mood slider (0–10) and habit checklist for the selected day. One entry per day: saving a day again overwrites its entry, and an entry can be deleted completely.
-- **Calendar:** pick today or any past day to see, fill in or change its entry. Days with an entry are marked with a dot.
-- **Habits:** add your own habits and remove the ones you dropped. Past entries keep removed habits, so their history stays intact.
-- **Overview:** average mood for the last 7, 30 or 365 days or in total, and a streak for each habit.
+- **Check-in:** an emoji scale for the mood (0–10, one color per step) and the habit list for the selected day, with a progress ring and each habit's streak. The mood is required, habits are optional. One entry per day: saving a day again overwrites its entry, and an entry can be deleted completely. Switching days or closing the tab with unsaved changes asks first.
+- **Date navigation:** a week strip (Monday to Sunday) with each logged day's mood as a colored dot, and a calendar to jump to any past day.
+- **Habits:** add your own habits (or pick a suggestion) and remove the ones you dropped. Past entries keep removed habits, so their history stays intact.
+- **Overview:** average mood and the share of habits done (on logged days) for the last 7 or 30 days, the year or in total, plus each habit's streak and completion.
+- **Mood chart:** daily mood and its 7-day average for the last 7, 30 or 90 days or the year. Days without an entry are gaps, not zeros. Click a day to open it.
+- **Habit heatmap:** the last 53 weeks, GitHub style: the more habits done on a day, the darker its square (relative to the busiest day). Can be filtered to one habit; click a day to open it.
 - **Sign-in:** GitHub login via Auth.js (NextAuth v5); entries and habits are stored per user in MongoDB.
 - **Local mode:** runs without any setup, with a demo login and local file storage, for development and testing.
 
@@ -87,15 +87,24 @@ See [`.env.example`](.env.example). None of them are needed for local mode.
 ## Project structure
 
 - `src/app/`: pages (`/` and `/dashboard`), server actions in `actions/`, the Auth.js route in `api/auth/`
-- `src/components/dashboard/`: calendar, day tracker, overview and the local-mode demo data bar
-- `src/components/nav/`: navigation, user menu, sign-in and sign-out
-- `src/components/ui/`: UI components (shadcn/ui, Radix)
+- `src/components/dashboard/`: header and week strip, calendar, check-in (mood picker, habit rows, save bar), habit dialog, overview, mood chart, habit heatmap and the local-mode demo data bar
+- `src/components/landing/`: the landing page's check-in preview and sample insights (built from the dashboard components)
+- `src/components/nav/`: navigation, user menu, sign-in and sign-out, footer
+- `src/components/brand/`: the Moodify logo (lotus mark and wordmark)
+- `src/components/ui/`: UI components (shadcn/ui, Radix; charts with Recharts)
 - `src/lib/`: mode detection, day keys, validation, statistics, demo data, MongoDB client
 - `src/lib/store/`: storage backends with the same functions: MongoDB (normal mode) and JSON file (local mode)
 - `src/hooks/`: React hooks
 - `tests/`: unit tests
 - `auth.js`: Auth.js setup (GitHub + MongoDB, or the demo login in local mode)
 
+## Design
+
+- **Theme:** colors are CSS variables in `src/app/globals.css` (light and dark palette; there is no dark mode toggle yet) and are available as Tailwind colors (`tailwind.config.js`). Sage green is the primary color, lavender and peach are accents.
+- **Mood colors:** `--mood-0` … `--mood-10`, from muted blue over sand to sage (no red: a low day isn't a failure). Use `bg-mood-N` for fixed values or `moodColor(mood)` from `src/lib/mood.js` for computed ones.
+- **Fonts:** Figtree for text, Fraunces (with its "soft" axis) for headings, both bundled in `src/app/fonts`. Emojis use the `font-emoji` stack, so color emoji fonts win over black-and-white system glyphs.
+- **Logo:** `src/components/brand/Logo.jsx` uses the theme colors. The favicon `src/app/icon.svg` is a copy with fixed colors; `favicon.ico` and `apple-icon.png` are rendered from it. Update them together.
+
 ## License
 
-MIT, see [LICENSE](LICENSE). The bundled Geist fonts (`src/app/fonts`) are under the SIL Open Font License.
+MIT, see [LICENSE](LICENSE). The bundled fonts Figtree and Fraunces (`src/app/fonts`) are under the SIL Open Font License (license texts included there).

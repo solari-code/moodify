@@ -4,10 +4,9 @@ export default async function Layout({ children }) {
 
     await requireUser();
 
+    // pt-16: room for the fixed navigation bar
     return (
-        <div
-            className="items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]"
-        >
+        <div className="min-h-screen pt-16">
             {children}
         </div>
     )

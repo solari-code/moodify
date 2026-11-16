@@ -1,101 +1,97 @@
 "use client"
 
-import { useState } from "react"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
+import { useEffect, useId, useState } from "react"
+import { Settings2, CircleCheck, Trash2 } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
-import { Plus, X } from "lucide-react"
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip"
-
-import { moodEmoji } from "@/lib/mood"
-
-// Keys that change the slider. Pressing one while no mood is chosen yet
-// chooses the current position (so 0 can be picked without moving away first).
-const SLIDER_KEYS = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", "PageUp", "PageDown"]
+import MoodPicker from "@/components/dashboard/MoodPicker"
+import ProgressRing from "@/components/dashboard/ProgressRing"
+import ManageHabitsDialog from "@/components/dashboard/ManageHabitsDialog"
+import HabitSuggestions from "@/components/dashboard/HabitSuggestions"
+import HabitRow from "@/components/dashboard/HabitRow"
+import { cn } from "@/lib/utils"
 
 function sameHabits(a, b) {
     return a.length === b.length && a.every((name) => b.includes(name))
 }
 
-// The form for one day. The dashboard gives it a `key` per day, so switching
-// days starts with a fresh form filled from that day's entry.
+// The check-in card for one day: mood, habits and saving. The dashboard
+// gives it a `key` per day, so switching days starts with a fresh form
+// filled from that day's entry.
 //
-// entry:  the saved entry of the day or null
-// habits: the user's current habit list [{ name }]
-// on*:    callbacks that call the server and update the dashboard state;
-//         they return the server action's result
-export default function DayTracker({ entry, habits, onSaveEntry, onDeleteEntry, onAddHabit, onRemoveHabit, dateKey }) {
+// Mood is required for an entry; habits are optional. Nothing is saved until
+// the user presses Save (one entry per day, saving again overwrites it).
+//
+// entry:     the saved entry of the day or null
+// habits:    the user's current habit list [{ name }]
+// streaks:   { [habit name]: current streak in days }
+// isToday / dateLabel: for the card header
+// on*:       callbacks that call the server and update the dashboard state;
+//            they return the server action's result
+// onDirtyChange: called with true/false when unsaved changes appear/disappear
+export default function DayTracker({
+    entry, habits, streaks = {}, dateKey, isToday, dateLabel,
+    onSaveEntry, onDeleteEntry, onAddHabit, onRemoveHabit, onDirtyChange,
+}) {
+
+    const moodLabelId = useId()
+    const habitsLabelId = useId()
 
     // null = no mood chosen yet
-    let [mood, setMood] = useState(entry?.mood ?? null)
-    let [doneHabits, setDoneHabits] = useState(() => entry?.habits ?? [])
-    let [pending, setPending] = useState(null) // "save" | "delete" | null
-    let [error, setError] = useState("")
-    let [confirmingDelete, setConfirmingDelete] = useState(false)
-
-    let [newHabit, setNewHabit] = useState("")
-    let [tooltipOpen, setTooltipOpen] = useState(false)
-    let [tooltipError, setTooltipError] = useState("");
+    const [mood, setMood] = useState(entry?.mood ?? null)
+    const [doneHabits, setDoneHabits] = useState(() => entry?.habits ?? [])
+    const [pending, setPending] = useState(null) // "save" | "delete" | null
+    const [error, setError] = useState("")
+    const [confirmingDelete, setConfirmingDelete] = useState(false)
 
     const habitNames = habits.map((habit) => habit.name)
 
     // Habits of the saved entry that were deleted from the habit list since.
-    // They aren't shown, but are saved back unchanged, so the day keeps its history.
+    // They aren't shown as rows, but are saved back unchanged, so the day keeps its history.
     const hiddenHabits = (entry?.habits ?? []).filter((name) => !habitNames.includes(name))
 
     // What "Save" would store: the visible habits switched on + the hidden ones.
-    const habitsToSave = [...habitNames.filter((name) => doneHabits.includes(name)), ...hiddenHabits]
+    const visibleDone = habitNames.filter((name) => doneHabits.includes(name))
+    const habitsToSave = [...visibleDone, ...hiddenHabits]
 
-    const hasChanges = !entry || mood !== entry.mood || !sameHabits(habitsToSave, entry.habits)
+    // Differs from what is stored (for a new day: anything was filled in).
+    const hasChanges = entry
+        ? mood !== entry.mood || !sameHabits(habitsToSave, entry.habits)
+        : mood !== null || visibleDone.length > 0
 
-    function handleTooltipError(message) {
-        setTooltipError(message);
-        setTooltipOpen(true);
-        setTimeout(removeTooltipError, 3000);
-    }
-    function removeTooltipError() {
-        setTooltipOpen(false);
-        setTooltipError("");
-    }
-
-    function chooseMoodIfNone() {
-        if (mood === null) setMood(0)
-    }
+    // Tell the dashboard, so it can ask before switching days. Reset when
+    // this day's form goes away.
+    useEffect(() => {
+        onDirtyChange?.(hasChanges)
+        return () => onDirtyChange?.(false)
+    }, [hasChanges, onDirtyChange])
 
     function toggleHabit(name) {
+        setConfirmingDelete(false)
         setDoneHabits((current) => current.includes(name)
             ? current.filter((done) => done !== name)
             : [...current, name])
     }
 
-    async function addHabit(habit) {
-        const name = habit.trim()
-        if (!name) return
-        if (habitNames.some((existing) => existing.toLowerCase() === name.toLowerCase())) {
-            handleTooltipError("This habit already exists :)")
-            return
-        }
-
-        try {
-            const result = await onAddHabit(name)
-            if (!result.success) {
-                handleTooltipError(result.message)
-                return
-            }
-            setNewHabit("")
-        } catch {
-            handleTooltipError("Could not add the habit. Please try again.")
-        }
+    function chooseMood(value) {
+        setConfirmingDelete(false)
+        setMood(value)
     }
 
-    async function removeHabit(name) {
+    function discardChanges() {
+        setMood(entry?.mood ?? null)
+        setDoneHabits(entry?.habits ?? [])
+        setError("")
+    }
+
+    // Suggestion chips in the empty state; errors are shown below the card content.
+    async function addSuggestedHabit(name) {
+        setError("")
         try {
-            await onRemoveHabit(name)
+            const result = await onAddHabit(name)
+            if (!result.success) setError(result.message)
         } catch {
-            handleTooltipError("Could not remove the habit. Please try again.")
+            setError("Could not add the habit. Please try again.")
         }
     }
 
@@ -132,126 +128,163 @@ export default function DayTracker({ entry, habits, onSaveEntry, onDeleteEntry, 
         }
     }
 
-    let saveButton;
-    if (pending === "save") {
-        saveButton = <Button disabled className="w-full">Saving…</Button>
-    } else if (mood === null) {
-        saveButton = <Button disabled className="w-full">Select your mood</Button>
-    } else if (!entry) {
-        saveButton = <Button className="w-full" onClick={saveEntry} disabled={pending !== null}>Save entry</Button>
-    } else if (hasChanges) {
-        saveButton = <Button className="w-full" onClick={saveEntry} disabled={pending !== null}>Update entry</Button>
-    } else {
-        saveButton = <Button disabled className="w-full">Entry saved</Button>
-    }
+    const manageButton = (
+        <ManageHabitsDialog habits={habits} onAddHabit={onAddHabit} onRemoveHabit={onRemoveHabit}>
+            <Button variant="outline" size="sm">
+                <Settings2 className="mr-2 h-4 w-4" aria-hidden="true" />
+                Manage habits
+            </Button>
+        </ManageHabitsDialog>
+    )
 
     return (
-        <>
-            <div className="space-y-4">
-                <Label size="m" htmlFor="mood-slider">How are you?</Label>
-                <Slider
-                    id="mood-slider"
-                    min={0}
-                    max={10}
-                    step={1}
-                    value={[mood ?? 0]}
-                    onValueChange={(value) => setMood(value[0])}
-                    onPointerDown={chooseMoodIfNone}
-                    onKeyDown={(event) => { if (SLIDER_KEYS.includes(event.key)) chooseMoodIfNone() }}
-                />
-                <div className="text-center font-semibold">{
-                    mood === null ? "🌞" : mood + " " + moodEmoji(mood)
-                }</div>
-            </div>
-            <Separator className="my-5" />
-            <div className="space-y-2">
-                <Label size="m">Habits</Label>
-                {habits.map((habit, index) => (
-                    <div key={habit.name} className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                            <Switch
-                                id={`habit-${index}`}
-                                checked={doneHabits.includes(habit.name)}
-                                onCheckedChange={() => toggleHabit(habit.name)}
-                            />
-                            <Label htmlFor={`habit-${index}`}>{habit.name}</Label>
-                        </div>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            aria-label={`Remove habit ${habit.name}`}
-                            onClick={() => removeHabit(habit.name)}
-                        >
-                            <X className="h-4 w-4" />
-                        </Button>
+        <Card id="check-in" className="scroll-mt-24 lg:col-span-2">
+            <CardHeader className="flex-row items-start justify-between gap-4 space-y-0 px-4 sm:px-6">
+                <div className="space-y-1.5">
+                    <CardTitle as="h2" className="text-2xl">{isToday ? "Today's check-in" : "Check-in"}</CardTitle>
+                    <CardDescription>{dateLabel}</CardDescription>
+                </div>
+                {habits.length > 0 && <ProgressRing done={visibleDone.length} total={habits.length} />}
+            </CardHeader>
+
+            <CardContent className="space-y-8 px-4 sm:px-6">
+                {/* MOOD */}
+                <section className="space-y-3">
+                    <h3 id={moodLabelId} className="font-sans text-base font-medium">
+                        {isToday ? "How are you feeling?" : "How did you feel?"}
+                    </h3>
+                    <MoodPicker
+                        value={mood}
+                        onChange={chooseMood}
+                        labelId={moodLabelId}
+                        emptyText={isToday ? "How does today feel?" : "How did this day feel?"}
+                    />
+                </section>
+
+                {/* HABITS */}
+                <section className="space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                        <h3 id={habitsLabelId} className="font-sans text-base font-medium">Habits</h3>
+                        {habits.length > 0 && manageButton}
                     </div>
-                ))}
-                <div className="flex items-center space-x-2">
 
-                    <TooltipProvider disableHoverableContent>
-                        <Tooltip open={tooltipOpen}>
-                            <TooltipTrigger asChild>
-                                <Input
-                                    placeholder="Add new habit"
-                                    value={newHabit}
-                                    onChange={(e) => setNewHabit(e.target.value)}
-                                />
-                            </TooltipTrigger>
+                    {habits.length === 0 ? (
+                        <div className="space-y-4 rounded-xl border border-dashed bg-muted/40 p-5 text-center">
+                            <div className="space-y-1">
+                                <p className="font-medium">Start with one small habit</p>
+                                <p className="text-sm text-muted-foreground">
+                                    Pick a suggestion or add your own. You can tick them off here every day.
+                                </p>
+                            </div>
+                            <HabitSuggestions existing={habitNames} onAdd={addSuggestedHabit} className="[&_ul]:justify-center" />
+                            {manageButton}
+                        </div>
+                    ) : (
+                        <ul aria-labelledby={habitsLabelId} className="grid gap-2 sm:grid-cols-2">
+                            {habits.map(({ name }) => (
+                                <li key={name}>
+                                    <HabitRow
+                                        name={name}
+                                        done={doneHabits.includes(name)}
+                                        streak={streaks[name] ?? 0}
+                                        onToggle={() => toggleHabit(name)}
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    )}
 
-                            <TooltipContent>
-                                <p>{tooltipError}</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                    {hiddenHabits.length > 0 && (
+                        <p className="text-xs text-muted-foreground">
+                            Also logged on this day: {hiddenHabits.join(", ")} (no longer in your habit list)
+                        </p>
+                    )}
+                </section>
 
-                    <Button
-                        onClick={() => { addHabit(newHabit) }}
-                        size="icon"
-                        aria-label="Add habit"
-                        className="min-w-[40px]">
-                        <Plus className="h-4 w-4" />
+                {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+
+                <SaveBar
+                    entry={entry}
+                    mood={mood}
+                    hasChanges={hasChanges}
+                    pending={pending}
+                    confirmingDelete={confirmingDelete}
+                    onSave={saveEntry}
+                    onDiscard={discardChanges}
+                    onAskDelete={() => setConfirmingDelete(true)}
+                    onCancelDelete={() => setConfirmingDelete(false)}
+                    onDelete={deleteEntry}
+                />
+            </CardContent>
+        </Card>
+    )
+}
+
+// Footer of the check-in: what the state is and what can be done.
+// Sticks to the bottom of the screen while there are unsaved changes.
+function SaveBar({ entry, mood, hasChanges, pending, confirmingDelete, onSave, onDiscard, onAskDelete, onCancelDelete, onDelete }) {
+
+    const busy = pending !== null
+
+    if (confirmingDelete) {
+        return (
+            <div className="flex flex-col gap-3 rounded-xl border border-destructive/40 bg-destructive/5 p-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm">Delete the whole entry for this day?</p>
+                <div className="flex gap-2">
+                    <Button variant="ghost" size="sm" onClick={onCancelDelete} disabled={busy}>Cancel</Button>
+                    <Button variant="destructive" size="sm" onClick={onDelete} disabled={busy}>
+                        {pending === "delete" ? "Deleting…" : "Delete entry"}
                     </Button>
                 </div>
+            </div>
+        )
+    }
 
-                {saveButton}
+    let status
+    if (pending === "save") status = "Saving…"
+    else if (mood === null) status = "Choose your mood to save this day"
+    else if (!entry) status = "Not saved yet"
+    else if (hasChanges) status = "Unsaved changes"
+    else status = "Saved"
 
-                {entry && !confirmingDelete && (
+    const saved = entry && !hasChanges && !busy
+
+    return (
+        <div
+            className={cn(
+                "flex flex-col gap-3 rounded-xl border p-3 sm:flex-row sm:items-center sm:justify-between",
+                hasChanges
+                    ? "sticky bottom-4 z-10 border-primary/30 bg-card/95 shadow-soft-lg backdrop-blur"
+                    : "bg-muted/40"
+            )}
+        >
+            <p role="status" className={cn("flex items-center gap-2 text-sm", saved ? "text-primary" : "text-muted-foreground")}>
+                {saved && <CircleCheck className="h-4 w-4" aria-hidden="true" />}
+                {hasChanges && !busy && <span className="h-2 w-2 rounded-full bg-peach-strong" aria-hidden="true" />}
+                {status}
+            </p>
+
+            <div className="flex flex-wrap gap-2 sm:justify-end">
+                {hasChanges && (
+                    <Button variant="ghost" size="sm" onClick={onDiscard} disabled={busy}>Discard</Button>
+                )}
+                {saved && (
                     <Button
                         variant="ghost"
-                        className="w-full text-destructive hover:text-destructive"
-                        onClick={() => setConfirmingDelete(true)}
-                        disabled={pending !== null}
+                        size="sm"
+                        className="text-muted-foreground hover:text-destructive"
+                        onClick={onAskDelete}
                     >
+                        <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
                         Delete entry
                     </Button>
                 )}
-                {entry && confirmingDelete && (
-                    <div className="space-y-2 rounded-md border border-destructive/50 p-3">
-                        <p className="text-sm">Delete the whole entry for this day?</p>
-                        <div className="flex gap-2">
-                            <Button
-                                variant="outline"
-                                className="flex-1"
-                                onClick={() => setConfirmingDelete(false)}
-                                disabled={pending !== null}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                variant="destructive"
-                                className="flex-1"
-                                onClick={deleteEntry}
-                                disabled={pending !== null}
-                            >
-                                {pending === "delete" ? "Deleting…" : "Delete"}
-                            </Button>
-                        </div>
-                    </div>
+                {!saved && (
+                    <Button size="sm" className="min-w-28" onClick={onSave} disabled={busy || mood === null || !hasChanges}>
+                        {pending === "save" ? "Saving…" : entry ? "Update entry" : "Save entry"}
+                    </Button>
                 )}
-
-                {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
             </div>
-
-        </>
+        </div>
     )
 }

@@ -1,4 +1,3 @@
-
 import ClientWrapper from './clientWrapper';
 import { getHabits } from '@/app/actions/habits'
 import { getEntries } from '@/app/actions/entries'
@@ -11,8 +10,8 @@ export const metadata = {
 
 export default async function Dashboard() {
 
-    await requireUser();
+    const user = await requireUser();
     const [habits, entries] = await Promise.all([getHabits(), getEntries()]);
 
-    return (< ClientWrapper habits={habits} entries={entries} localMode={isLocalMode()} />)
+    return (<ClientWrapper habits={habits} entries={entries} userName={user.name ?? ""} localMode={isLocalMode()} />)
 }

@@ -1,213 +1,183 @@
 import Link from "next/link";
 import { auth } from "@/../auth";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { CalendarDays, ListChecks, LineChart, Flame, Smile, ArrowRight } from "lucide-react";
+import { CalendarDays, ChartLine, Flame, Grid3x3, ListChecks, Smile, ArrowRight, Sparkles } from "lucide-react";
 import ButtonSignIn from "@/components/nav/ButtonSignIn";
+import CheckInPreview from "@/components/landing/CheckInPreview";
+import LandingInsights from "@/components/landing/LandingInsights";
+import { cn } from "@/lib/utils";
 
 export const metadata = {
   title: "Moodify – Track your mood and habits",
-  description: "Log how you feel each day, tick off your habits and see how both change over time.",
+  description: "Check in with yourself each day: log your mood, tick off your habits and see how both change over time.",
 };
-
-// A few points of the 0–10 mood scale, the same emojis as the day tracker
-const moodScale = [
-  { value: 0, emoji: "😭" },
-  { value: 3, emoji: "😞" },
-  { value: 5, emoji: "🙂" },
-  { value: 7, emoji: "😄" },
-  { value: 10, emoji: "😍" },
-];
 
 const steps = [
   {
-    title: "Pick a day",
-    text: "Choose today or any day in the past from the calendar.",
+    icon: Smile,
+    tone: "bg-lavender text-lavender-foreground",
+    title: "Check in with yourself",
+    text: "Pick how the day felt on a scale from 0 to 10. It takes a few seconds.",
   },
   {
-    title: "Log your mood",
-    text: "Move the slider from 0 to 10 to say how the day felt.",
-  },
-  {
+    icon: ListChecks,
+    tone: "bg-secondary text-secondary-foreground",
     title: "Tick off your habits",
-    text: "Mark the habits you kept, like a walk, reading or no phone after 10.",
+    text: "Mark the small things you did for yourself: a walk, a few pages, an early night.",
+  },
+  {
+    icon: Sparkles,
+    tone: "bg-peach text-peach-foreground",
+    title: "See your patterns",
+    text: "Over the weeks, the chart and heatmap show what lifts your mood.",
   },
 ];
 
 const features = [
-  {
-    icon: Smile,
-    title: "Mood on a 0–10 scale",
-    text: "One slider, one emoji. Quick enough to do every evening.",
-  },
-  {
-    icon: ListChecks,
-    title: "Your own habits",
-    text: "Add the habits you care about and remove the ones you dropped.",
-  },
-  {
-    icon: CalendarDays,
-    title: "Calendar",
-    text: "Jump to any past day to look back or fill in a day you missed.",
-  },
-  {
-    icon: LineChart,
-    title: "Overview",
-    text: "Average mood per week, month or year, and your habit streaks.",
-  },
+  { icon: Smile, title: "Mood check-in", text: "A calm 0–10 scale with one emoji per step. Quick enough for every evening." },
+  { icon: ChartLine, title: "Mood over time", text: "Your daily mood and its 7-day average, from the last week to the whole year." },
+  { icon: ListChecks, title: "Your own habits", text: "Add the habits you care about and tick them off next to your mood." },
+  { icon: Grid3x3, title: "Habit heatmap", text: "A year of habits at a glance: the darker the day, the more you did." },
+  { icon: Flame, title: "Streaks", text: "See how many days in a row you kept each habit, without pressure." },
+  { icon: CalendarDays, title: "Look back anytime", text: "Open any past day to remember how it went or fill in a day you missed." },
 ];
 
-// Example habits for the preview card
-const previewHabits = [
-  { name: "Morning walk", done: true },
-  { name: "Read 20 pages", done: true },
-  { name: "No phone after 10 pm", done: false },
-];
+// Soft colored shapes behind a section (decoration only).
+function Glow({ className }) {
+  return <div aria-hidden="true" className={cn("pointer-events-none absolute rounded-full blur-3xl", className)} />;
+}
+
+// "Open your dashboard" when signed in, otherwise the sign-in button.
+function PrimaryAction({ signedIn, variant, children }) {
+  return signedIn ? (
+    <Button asChild size="lg" variant={variant}>
+      <Link href="/dashboard">
+        Open your dashboard
+        <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+      </Link>
+    </Button>
+  ) : (
+    <ButtonSignIn size="lg" variant={variant}>{children}</ButtonSignIn>
+  );
+}
 
 export default async function Home() {
   const session = await auth();
   const signedIn = !!session?.user;
 
   return (
-    <div className="pt-16 font-[family-name:var(--font-geist-sans)]">
+    <div className="pt-16">
       {/* HERO */}
-      <section className="container mx-auto px-4 py-16 md:py-24">
-        <div className="grid items-center gap-12 md:grid-cols-2">
-          <div className="space-y-6 text-center md:text-left">
-            <Badge variant="secondary" className="text-sm">
+      <section className="relative overflow-hidden">
+        <Glow className="-left-24 top-10 h-72 w-72 bg-lavender-strong/25" />
+        <Glow className="right-0 top-0 h-80 w-80 bg-peach-strong/20" />
+        <Glow className="bottom-0 left-1/3 h-64 w-64 bg-primary/10" />
+
+        <div className="container relative mx-auto max-w-6xl grid items-center gap-12 px-4 py-16 md:py-24 lg:grid-cols-[1.1fr_1fr]">
+          <div className="space-y-7 text-center lg:text-left">
+            <p className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-card/70 px-3 py-1 text-sm font-medium text-secondary-foreground">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
               Mood &amp; habit tracker
-            </Badge>
-            <h1 className="text-4xl font-bold tracking-tight md:text-5xl">
-              How was your day, really?
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Moodify helps you notice what makes your days better. Log your mood in a few seconds,
-              tick off your habits, and see how both change over time.
             </p>
-            <div className="flex flex-col items-center gap-3 sm:flex-row md:justify-start">
-              {signedIn ? (
-                <Button asChild size="lg">
-                  <Link href="/dashboard">
-                    Open your dashboard
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              ) : (
-                <ButtonSignIn size="lg">
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </ButtonSignIn>
-              )}
+            <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
+              How was your day, <span className="text-primary">really?</span>
+            </h1>
+            <p className="mx-auto max-w-xl text-lg text-muted-foreground lg:mx-0">
+              Moodify is a calm place to check in with yourself. Log your mood in a few seconds,
+              tick off the habits that matter to you, and discover what makes your good days good.
+            </p>
+            <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
+              <PrimaryAction signedIn={signedIn}>
+                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+              </PrimaryAction>
               <Button asChild size="lg" variant="ghost">
                 <Link href="#how-it-works">How it works</Link>
               </Button>
             </div>
           </div>
 
-          {/* PREVIEW CARD */}
-          <Card className="mx-auto w-full max-w-sm shadow-lg">
-            <CardHeader className="text-center">
-              <CardTitle>Log your Day</CardTitle>
-              <CardDescription>Example entry</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-3">
-                <p className="text-sm font-medium">How are you?</p>
-                <div className="flex justify-between text-2xl" aria-hidden="true">
-                  {moodScale.map((point) => (
-                    <span
-                      key={point.value}
-                      className={point.value === 7 ? "scale-125" : "opacity-40"}
-                    >
-                      {point.emoji}
-                    </span>
-                  ))}
-                </div>
-                <p className="text-center font-semibold">7 😄</p>
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm font-medium">Habits</p>
-                {previewHabits.map((habit) => (
-                  <div key={habit.name} className="flex items-center justify-between text-sm">
-                    <span className={habit.done ? "" : "text-muted-foreground"}>{habit.name}</span>
-                    <span
-                      className={`h-5 w-9 rounded-full p-0.5 ${habit.done ? "bg-primary" : "bg-input"}`}
-                      aria-label={habit.done ? "done" : "not done"}
-                    >
-                      <span
-                        className={`block h-4 w-4 rounded-full bg-background transition-transform ${habit.done ? "translate-x-4" : ""}`}
-                      />
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                <Flame className="h-4 w-4 text-orange-500" />
-                <span>Morning walk: 12 days in a row</span>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="relative mx-auto w-full max-w-lg">
+            <CheckInPreview />
+            <p className="absolute -bottom-4 -left-2 hidden items-center gap-1.5 rounded-full bg-peach px-3 py-1.5 text-sm font-semibold text-peach-foreground shadow-soft sm:flex" aria-hidden="true">
+              <Flame className="h-4 w-4" /> 12-day streak
+            </p>
+          </div>
         </div>
       </section>
 
       {/* HOW IT WORKS */}
-      <section id="how-it-works" className="scroll-mt-20 border-y bg-muted/40">
-        <div className="container mx-auto px-4 py-16">
-          <h2 className="mb-10 text-center text-3xl font-bold tracking-tight">How it works</h2>
+      <section id="how-it-works" className="scroll-mt-20 border-y border-border/60 bg-card/60">
+        <div className="container mx-auto max-w-6xl px-4 py-16 md:py-20">
+          <div className="mx-auto mb-12 max-w-2xl space-y-3 text-center">
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">A minute a day is enough</h2>
+            <p className="text-muted-foreground">No journaling marathon, no pressure. Just a short, honest check-in.</p>
+          </div>
           <ol className="grid gap-6 md:grid-cols-3">
-            {steps.map((step, index) => (
-              <li key={step.title} className="flex gap-4 md:flex-col md:text-center">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground md:mx-auto">
+            {steps.map(({ icon: Icon, tone, title, text }, index) => (
+              <li key={title} className="relative rounded-xl border bg-card p-6 shadow-soft">
+                <span className="absolute right-5 top-4 font-heading text-4xl font-semibold text-muted-foreground/25" aria-hidden="true">
                   {index + 1}
                 </span>
-                <div className="space-y-1">
-                  <h3 className="font-semibold">{step.title}</h3>
-                  <p className="text-muted-foreground">{step.text}</p>
-                </div>
+                <span className={cn("mb-4 flex h-11 w-11 items-center justify-center rounded-xl", tone)}>
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <h3 className="mb-1 text-xl font-semibold">{title}</h3>
+                <p className="text-muted-foreground">{text}</p>
               </li>
             ))}
           </ol>
         </div>
       </section>
 
+      {/* INSIGHTS: the real chart and heatmap with sample data */}
+      <section className="relative overflow-hidden">
+        <Glow className="-right-32 top-24 h-80 w-80 bg-lavender-strong/15" />
+        <div className="container relative mx-auto max-w-6xl px-4 py-16 md:py-20">
+          <div className="mx-auto mb-10 max-w-2xl space-y-3 text-center">
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Watch your mood find its rhythm</h2>
+            <p className="text-muted-foreground">
+              Every check-in adds a point. Over time you see your ups and downs, and which habits
+              come with your better days. Here with a few months of sample data.
+            </p>
+          </div>
+          <LandingInsights />
+        </div>
+      </section>
+
       {/* FEATURES */}
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="mb-10 text-center text-3xl font-bold tracking-tight">Everything in one place</h2>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {features.map(({ icon: Icon, title, text }) => (
-            <Card key={title}>
-              <CardHeader>
-                <Icon className="mb-2 h-6 w-6 text-primary" />
-                <CardTitle className="text-lg">{title}</CardTitle>
-                <CardDescription>{text}</CardDescription>
-              </CardHeader>
-            </Card>
-          ))}
+      <section className="border-t border-border/60 bg-card/60">
+        <div className="container mx-auto max-w-6xl px-4 py-16 md:py-20">
+          <h2 className="mb-10 text-center text-3xl font-semibold tracking-tight sm:text-4xl">Everything in one calm place</h2>
+          <ul className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map(({ icon: Icon, title, text }) => (
+              <li key={title} className="flex gap-4">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <div className="space-y-1">
+                  <h3 className="font-sans text-base font-semibold">{title}</h3>
+                  <p className="text-sm text-muted-foreground">{text}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
       {/* CALL TO ACTION */}
-      <section className="border-t">
-        <div className="container mx-auto space-y-6 px-4 py-16 text-center">
-          <h2 className="text-3xl font-bold tracking-tight">Start with today</h2>
-          <p className="mx-auto max-w-xl text-muted-foreground">
-            It takes less than a minute. After a few weeks you&apos;ll start to see which habits lift your mood.
-          </p>
-          {signedIn ? (
-            <Button asChild size="lg">
-              <Link href="/dashboard">Open your dashboard</Link>
-            </Button>
-          ) : (
-            <ButtonSignIn size="lg" />
-          )}
+      <section className="container mx-auto max-w-6xl px-4 py-16 md:py-24">
+        <div className="relative overflow-hidden rounded-2xl bg-primary px-6 py-14 text-center text-primary-foreground shadow-soft-lg">
+          <Glow className="-left-16 -top-16 h-64 w-64 bg-lavender-strong/40" />
+          <Glow className="-bottom-20 -right-10 h-64 w-64 bg-peach-strong/40" />
+          <div className="relative mx-auto max-w-xl space-y-6">
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Start with today</h2>
+            <p className="text-primary-foreground">
+              It takes less than a minute. After a few weeks you&apos;ll start to see which habits lift your mood.
+            </p>
+            <PrimaryAction signedIn={signedIn} variant="secondary" />
+          </div>
         </div>
       </section>
-
-      <footer className="border-t">
-        <div className="container mx-auto px-4 py-6 text-center text-sm text-muted-foreground">
-          Moodify · a small mood and habit tracker
-        </div>
-      </footer>
     </div>
   );
 }

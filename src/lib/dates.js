@@ -60,3 +60,16 @@ export function addDays(dateKey, days) {
     const date = new Date(Date.UTC(year, month - 1, day + days))
     return date.toISOString().slice(0, 10)
 }
+
+// Weekday of a day key: 0 = Sunday … 6 = Saturday (like Date#getDay).
+// Calculated in UTC on the key itself, so it doesn't depend on the timezone.
+export function dayOfWeek(dateKey) {
+    const [year, month, day] = dateKey.split("-").map(Number)
+    return new Date(Date.UTC(year, month - 1, day)).getUTCDay()
+}
+
+// First day of the week that contains the day: "YYYY-MM-DD" -> "YYYY-MM-DD".
+// weekStartsOn: 0 = Sunday, 1 = Monday (default) … 6 = Saturday.
+export function startOfWeek(dateKey, weekStartsOn = 1) {
+    return addDays(dateKey, -((dayOfWeek(dateKey) - weekStartsOn + 7) % 7))
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <!-- Moodify lotus, same paths as src/components/brand/Logo.jsx (fixed colors: no CSS variables in favicons) -->
+  <style>
+    .c { fill: #44745e } .l { fill: #927fbd } .r { fill: #e5986c } .b { stroke: #44745e }
+    @media (prefers-color-scheme: dark) {
+      .c { fill: #7ab899 } .l { fill: #ab97d8 } .r { fill: #eca379 } .b { stroke: #7ab899 }
+    }
+  </style>
+  <path class="l" d="M24 39C15 37.5 7.5 31 5.5 20.5c8.5.5 15.5 6.5 18.5 18.5Z"/>
+  <path class="r" d="M24 39c9-1.5 16.5-8 18.5-18.5C34 21 27 27 24 39Z"/>
+  <path class="c" d="M24 7c6.5 7 8 20.5 0 32-8-11.5-6.5-25 0-32Z"/>
+  <path class="b" d="M14 43.5h20" stroke-width="3" stroke-linecap="round" fill="none"/>
+</svg>
