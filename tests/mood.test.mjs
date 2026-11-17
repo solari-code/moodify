@@ -1,6 +1,6 @@
 import { test, describe } from "node:test"
 import assert from "node:assert/strict"
-import { moodColor, moodEmoji, moodLabel } from "../src/lib/mood.js"
+import { moodColor, moodEmoji } from "../src/lib/mood.js"
 
 describe("moodColor", () => {
     test("maps each mood to its step of the scale", () => {
@@ -35,11 +35,3 @@ describe("moodEmoji", () => {
     })
 })
 
-describe("moodLabel", () => {
-    test("one label per mood, empty for unknown values", () => {
-        assert.equal(moodLabel(0), "Awful")
-        assert.equal(moodLabel(5), "Okay")
-        assert.equal(moodLabel(10), "Amazing")
-        assert.equal(moodLabel(11), "")
-    })
-})

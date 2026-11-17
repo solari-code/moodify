@@ -1,0 +1,377 @@
+{
+  "metadata": {
+    "default": {
+      "title": "Moodify",
+      "description": "Log how you feel each day, tick off your habits and see how both change over time."
+    },
+    "home": {
+      "title": "Moodify – Track your mood and habits",
+      "description": "Check in with yourself each day: log your mood, tick off your habits and see how both change over time."
+    },
+    "dashboard": {
+      "title": "Dashboard"
+    }
+  },
+  "common": {
+    "close": "Close",
+    "howItWorks": "How it works",
+    "today": "Today",
+    "cancel": "Cancel"
+  },
+  "languageSwitcher": {
+    "label": "Language",
+    "current": "<hidden>Language:</hidden> {language}"
+  },
+  "nav": {
+    "mainLabel": "Main",
+    "mobileLabel": "Mobile",
+    "home": "Moodify home",
+    "dashboard": "Dashboard",
+    "openMenu": "Open navigation menu",
+    "menuDescription": "Navigation and account",
+    "openUserMenu": "Open user menu",
+    "signOut": "Sign Out"
+  },
+  "signIn": {
+    "demo": "Continue as demo user",
+    "demoCompact": "Demo login",
+    "github": "Sign in with GitHub",
+    "compact": "Sign In"
+  },
+  "localMode": {
+    "badge": "Local mode",
+    "hint": "Demo login, data is stored in .data/ on this machine"
+  },
+  "footer": {
+    "label": "Footer",
+    "tagline": "A calm place to check in with yourself."
+  },
+  "checkIn": {
+    "titleToday": "Today's check-in",
+    "moodQuestionToday": "How are you feeling?",
+    "habits": "Habits",
+    "title": "Check-in",
+    "moodQuestion": "How did you feel?",
+    "moodEmptyToday": "How does today feel?",
+    "moodEmpty": "How did this day feel?",
+    "moodOption": "{mood}, {label}",
+    "moodValue": "{mood} · {label}",
+    "manageHabits": "Manage habits",
+    "emptyTitle": "Start with one small habit",
+    "emptyText": "Pick a suggestion or add your own. You can tick them off here every day.",
+    "hiddenHabits": "{count, plural, one {Also logged on this day: {habits} (no longer in your habit list)} other {Also logged on this day: {habits} (no longer in your habit list)}}",
+    "streak": "{count, plural, one {#-day streak} other {#-day streak}}",
+    "progress": "{done} of {total, plural, one {# habit} other {# habits}} done",
+    "progressShort": "{done}/{total}",
+    "save": {
+      "confirmDelete": "Delete the whole entry for this day?",
+      "deleting": "Deleting…",
+      "deleteEntry": "Delete entry",
+      "saving": "Saving…",
+      "chooseMood": "Choose your mood to save this day",
+      "notSaved": "Not saved yet",
+      "unsaved": "Unsaved changes",
+      "saved": "Saved",
+      "discard": "Discard",
+      "update": "Update entry",
+      "saveEntry": "Save entry"
+    }
+  },
+  "sampleHabits": {
+    "morningWalk": "Morning walk",
+    "read20Pages": "Read 20 pages",
+    "noPhoneAfter10pm": "No phone after 10 pm",
+    "meditate": "Meditate",
+    "drinkWater": "Drink 2 l of water",
+    "stretch": "Stretch",
+    "journal": "Journal",
+    "sleepBy11pm": "Sleep by 11 pm"
+  },
+  "landing": {
+    "hero": {
+      "badge": "Mood & habit tracker",
+      "title": "How was your day, <accent>really?</accent>",
+      "intro": "Moodify is a calm place to check in with yourself. Log your mood in a few seconds, tick off the habits that matter to you, and discover what makes your good days good.",
+      "openDashboard": "Open your dashboard"
+    },
+    "preview": {
+      "description": "Try it, nothing is saved"
+    },
+    "steps": {
+      "title": "A minute a day is enough",
+      "intro": "No journaling marathon, no pressure. Just a short, honest check-in.",
+      "checkIn": {
+        "title": "Check in with yourself",
+        "text": "Pick how the day felt on a scale from 0 to 10. It takes a few seconds."
+      },
+      "habits": {
+        "title": "Tick off your habits",
+        "text": "Mark the small things you did for yourself: a walk, a few pages, an early night."
+      },
+      "patterns": {
+        "title": "See your patterns",
+        "text": "Over the weeks, the chart and heatmap show what lifts your mood."
+      }
+    },
+    "insights": {
+      "title": "Watch your mood find its rhythm",
+      "intro": "Every check-in adds a point. Over time you see your ups and downs, and which habits come with your better days. Here with a few months of sample data."
+    },
+    "features": {
+      "title": "Everything in one calm place",
+      "moodCheckIn": {
+        "title": "Mood check-in",
+        "text": "A calm 0–10 scale with one emoji per step. Quick enough for every evening."
+      },
+      "moodOverTime": {
+        "title": "Mood over time",
+        "text": "Your daily mood and its 7-day average, from the last week to the whole year."
+      },
+      "ownHabits": {
+        "title": "Your own habits",
+        "text": "Add the habits you care about and tick them off next to your mood."
+      },
+      "heatmap": {
+        "title": "Habit heatmap",
+        "text": "A year of habits at a glance: the darker the day, the more you did."
+      },
+      "streaks": {
+        "title": "Streaks",
+        "text": "See how many days in a row you kept each habit, without pressure."
+      },
+      "lookBack": {
+        "title": "Look back anytime",
+        "text": "Open any past day to remember how it went or fill in a day you missed."
+      }
+    },
+    "cta": {
+      "title": "Start with today",
+      "text": "It takes less than a minute. After a few weeks you'll start to see which habits lift your mood."
+    }
+  },
+  "dashboard": {
+    "loading": "Loading dashboard",
+    "todayLabel": "Today, {date}",
+    "header": {
+      "greeting": {
+        "night": "Hello",
+        "morning": "Good morning",
+        "afternoon": "Good afternoon",
+        "evening": "Good evening"
+      },
+      "checkInToday": "Take a moment to check in with yourself.",
+      "lookingBack": "Looking back at {date}.",
+      "backToToday": "Back to today",
+      "pickDate": "Pick a date",
+      "chooseDate": "Choose a date",
+      "greetingNamed": {
+        "night": "Hello, {name}",
+        "morning": "Good morning, {name}",
+        "afternoon": "Good afternoon, {name}",
+        "evening": "Good evening, {name}"
+      }
+    },
+    "weekStrip": {
+      "previous": "Previous week",
+      "next": "Next week",
+      "weekOf": "Week of {range}",
+      "dayWithMood": "{label}, {date}, mood {mood}",
+      "dayNoEntry": "{label}, {date}, no entry",
+      "dayFuture": "{label}, {date}"
+    },
+    "calendar": {
+      "day": "{date}, {weekday}",
+      "withState": "{label}, {state}",
+      "today": "today",
+      "selected": "selected",
+      "entrySaved": "entry saved"
+    },
+    "unsaved": {
+      "title": "Discard unsaved changes?",
+      "description": "Your check-in for {day} isn't saved yet. If you switch days now, these changes are lost.",
+      "discard": "Discard changes",
+      "keep": "Keep editing"
+    },
+    "demoData": {
+      "intro": "<b>Local mode:</b> try the dashboard with a few months of sample data.",
+      "load": "Load demo data",
+      "confirm": "This replaces all your local habits and entries.",
+      "replace": "Replace with demo data",
+      "loading": "Loading…",
+      "loaded": "Demo data loaded: {habits, plural, one {# habit} other {# habits}}, {entries, plural, one {# entry} other {# entries}}"
+    },
+    "overview": {
+      "title": "Overview",
+      "periodLabel": "Period",
+      "periods": {
+        "week": {
+          "short": "7 days",
+          "long": "Last 7 days"
+        },
+        "month": {
+          "short": "30 days",
+          "long": "Last 30 days"
+        },
+        "year": {
+          "short": "Year",
+          "long": "Last year"
+        },
+        "total": {
+          "short": "All",
+          "long": "All entries"
+        }
+      },
+      "averageMood": "Average mood",
+      "habitsDone": "Habits done",
+      "noEntries": "No entries in this period",
+      "basedOn": "Based on {count, plural, one {# logged day} other {# logged days}}",
+      "habits": "Habits",
+      "noHabits": "Add habits to see your streaks",
+      "streak": "{count, plural, one {# day<hidden> streak</hidden>} other {# days<hidden> streak</hidden>}}",
+      "completion": "{name}: done on {percent} of logged days",
+      "completionNone": "{name}: no logged days"
+    },
+    "moodChart": {
+      "title": "Mood over time",
+      "description": "Your daily mood and its 7-day average.",
+      "descriptionClickable": "Your daily mood and its 7-day average. Click a day to open it.",
+      "descriptionYear": "Your 7-day average mood over the year.",
+      "descriptionYearClickable": "Your 7-day average mood over the year. Click a day to open it.",
+      "rangeLabel": "Chart range",
+      "ranges": {
+        "week": {
+          "short": "7 days",
+          "long": "Last 7 days"
+        },
+        "month": {
+          "short": "30 days",
+          "long": "Last 30 days"
+        },
+        "quarter": {
+          "short": "90 days",
+          "long": "Last 90 days"
+        },
+        "year": {
+          "short": "Year",
+          "long": "Last year"
+        }
+      },
+      "dailyMood": "Daily mood",
+      "average": "7-day average",
+      "stats": "Average <b>{average}</b> · {count} of {days, plural, one {# day} other {# days}} logged",
+      "noEntries": "No entries in this range",
+      "summary": "{range}: average {average}, {count} of {days, plural, one {# day} other {# days}} logged.",
+      "summaryEmpty": "{range}: no moods logged.",
+      "empty": "No moods logged in this range yet",
+      "tooltip": {
+        "noEntry": "No entry",
+        "average": "7-day average: <b>{average}</b>",
+        "more": "{count, plural, one {# more} other {# more}}"
+      }
+    },
+    "heatmap": {
+      "title": "Habit activity",
+      "description": "Each square is a day: the darker, the more habits you did.",
+      "descriptionClickable": "Each square is a day: the darker, the more habits you did. Click a day to open it.",
+      "filterLabel": "Show habit",
+      "allHabits": "All habits",
+      "gridLabel": "Habit activity, last 12 months",
+      "keyboardHint": "Use the arrow keys to move between days.",
+      "noEntries": "No entries in the last 12 months yet",
+      "summaryHabit": "{habit}: done on {count, plural, one {# day} other {# days}} in the last 12 months.",
+      "summaryAll": "{active, plural, one {# day} other {# days}} with habits done, {logged, plural, one {# day} other {# days}} logged in the last 12 months.",
+      "activeDays": "{count, plural, one {<b>#</b> active day} other {<b>#</b> active days}}",
+      "habitDays": "{count, plural, one {<b>#</b> day done} other {<b>#</b> days done}}",
+      "loggedDays": "{count, plural, one {<b>#</b> day logged} other {<b>#</b> days logged}}",
+      "currentStreak": "Current streak <b>{count, plural, one {# day} other {# days}}</b>",
+      "bestDay": "Best day <b>{count, plural, one {# habit} other {# habits}}</b>",
+      "empty": "Log a few days to see your habit activity",
+      "cell": "{date}: {text}",
+      "cellToday": "{date}, today: {text}",
+      "day": {
+        "noEntry": "No entry",
+        "habitDone": "{habit} done",
+        "habitNotDone": "{habit} not done",
+        "nothingDone": "Logged, no habits done",
+        "habitsDone": "{count, plural, one {# habit done} other {# habits done}}"
+      },
+      "legend": {
+        "noEntry": "No entry",
+        "nothingDone": "Logged, no habits",
+        "less": "Less",
+        "more": "More"
+      }
+    },
+    "doneHabits": "✓ {habits}"
+  },
+  "errors": {
+    "localModeOnly": "Demo data is only available in local mode",
+    "invalidToday": "Invalid date for today",
+    "invalidDate": "Date must be a valid day in the format YYYY-MM-DD",
+    "futureDate": "Entries for future days are not allowed",
+    "invalidMood": "Mood must be a whole number from {moodMin} to {moodMax}",
+    "habitsNotList": "Habits must be a list",
+    "tooManyHabits": "An entry can have at most {maxHabits, plural, one {# habit} other {# habits}}",
+    "habitNameNotText": "Habit name must be text",
+    "habitNameRequired": "Habit name is required",
+    "habitNameTooLong": "Habit name can be at most {maxLength, plural, one {# character} other {# characters}}",
+    "habitExists": "This habit already exists",
+    "entryNotFound": "There is no entry for this day",
+    "saveFailed": "Could not save the entry. Please try again.",
+    "deleteFailed": "Could not delete the entry. Please try again.",
+    "addHabitFailed": "Could not add the habit. Please try again.",
+    "removeHabitFailed": "Could not remove the habit. Please try again.",
+    "loadDemoFailed": "Could not load the demo data. Please try again.",
+    "unknown": "Something went wrong. Please try again."
+  },
+  "moodLabels": {
+    "0": "Awful",
+    "1": "Very bad",
+    "2": "Bad",
+    "3": "Low",
+    "4": "Meh",
+    "5": "Okay",
+    "6": "Fine",
+    "7": "Good",
+    "8": "Very good",
+    "9": "Great",
+    "10": "Amazing"
+  },
+  "habitSuggestions": {
+    "label": "Suggested habits",
+    "add": "<hidden>Add habit</hidden> {name}"
+  },
+  "manageHabits": {
+    "title": "Your habits",
+    "description": "Small things you want to do regularly. Removing a habit keeps it in your past entries.",
+    "empty": "No habits yet. Add your first one below.",
+    "confirmRemove": "Remove <b>{name}</b>?",
+    "removing": "Removing…",
+    "remove": "Remove",
+    "removeHabit": "Remove habit {name}",
+    "addLabel": "Add a habit",
+    "placeholder": "e.g. Evening walk",
+    "add": "Add",
+    "ideas": "Need ideas?"
+  },
+  "errorPages": {
+    "notFound": {
+      "title": "Page not found",
+      "text": "This page doesn't exist (anymore). Maybe the link is wrong.",
+      "home": "Back to the start page"
+    },
+    "error": {
+      "title": "This page couldn't load",
+      "text": "Something went wrong on our side. Please try again.",
+      "retry": "Try again",
+      "home": "Go to the start page"
+    }
+  },
+  "authErrors": {
+    "title": "Sign-in didn't work",
+    "canceled": "The sign-in was canceled or not completed. You can try again anytime.",
+    "accountNotLinked": "Your email address is already linked to another account.",
+    "configuration": "Sign-in isn't available right now. Please try again later.",
+    "default": "Something went wrong while signing in. Please try again."
+  }
+}

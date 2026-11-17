@@ -3,14 +3,19 @@
 import { useState } from "react"
 import { FlaskConical } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useTranslations } from "@/i18n/client"
+import { errorMessage } from "@/i18n/errors"
 
 // Only shown in local mode: fills the dashboard with demo data for testing.
 // onLoad: calls the server and updates the dashboard; returns the action result.
 export default function DemoDataBar({ onLoad }) {
 
+    const t = useTranslations()
     let [confirming, setConfirming] = useState(false)
     let [pending, setPending] = useState(false)
-    let [message, setMessage] = useState(null) // { type: "success" | "error", text }
+    // { type: "success", habits, entries } | { type: "error", error: code } (see errorMessage)
+    // (kept as data, not text, so it follows a language switch)
+    let [message, setMessage] = useState(null)
 
     async function load() {
         setPending(true)
@@ -18,13 +23,13 @@ export default function DemoDataBar({ onLoad }) {
         try {
             const result = await onLoad()
             if (result.success) {
-                setMessage({ type: "success", text: `Demo data loaded: ${result.habits.length} habits, ${result.entries.length} entries` })
+                setMessage({ type: "success", habits: result.habits.length, entries: result.entries.length })
                 setConfirming(false)
             } else {
-                setMessage({ type: "error", text: result.message })
+                setMessage({ type: "error", error: result.error })
             }
         } catch {
-            setMessage({ type: "error", text: "Could not load the demo data. Please try again." })
+            setMessage({ type: "error", error: "loadDemoFailed" })
         } finally {
             setPending(false)
         }
@@ -35,30 +40,32 @@ export default function DemoDataBar({ onLoad }) {
             <p className="flex items-start gap-2 text-peach-foreground">
                 <FlaskConical className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
                 <span>
-                    <span className="font-semibold">Local mode:</span> try the dashboard with a few months of sample data.
+                    {t.rich("dashboard.demoData.intro", { b: (chunks) => <span className="font-semibold">{chunks}</span> })}
                 </span>
             </p>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 {message && (
                     <p role={message.type === "error" ? "alert" : "status"} className={message.type === "error" ? "text-destructive" : "text-peach-foreground"}>
-                        {message.text}
+                        {message.type === "success"
+                            ? t("dashboard.demoData.loaded", { habits: message.habits, entries: message.entries })
+                            : errorMessage(t, message.error)}
                     </p>
                 )}
 
                 {!confirming ? (
                     <Button variant="outline" size="sm" className="self-start sm:self-auto" onClick={() => { setConfirming(true); setMessage(null) }}>
-                        Load demo data
+                        {t("dashboard.demoData.load")}
                     </Button>
                 ) : (
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                        <span className="text-peach-foreground">This replaces all your local habits and entries.</span>
+                        <span className="text-peach-foreground">{t("dashboard.demoData.confirm")}</span>
                         <div className="flex gap-2">
                             <Button variant="ghost" size="sm" onClick={() => setConfirming(false)} disabled={pending}>
-                                Cancel
+                                {t("common.cancel")}
                             </Button>
                             <Button size="sm" onClick={load} disabled={pending}>
-                                {pending ? "Loading…" : "Replace with demo data"}
+                                {pending ? t("dashboard.demoData.loading") : t("dashboard.demoData.replace")}
                             </Button>
                         </div>
                     </div>

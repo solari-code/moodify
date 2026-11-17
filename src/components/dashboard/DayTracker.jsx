@@ -10,6 +10,8 @@ import ManageHabitsDialog from "@/components/dashboard/ManageHabitsDialog"
 import HabitSuggestions from "@/components/dashboard/HabitSuggestions"
 import HabitRow from "@/components/dashboard/HabitRow"
 import { cn } from "@/lib/utils"
+import { useFormatter, useTranslations } from "@/i18n/client"
+import { errorMessage } from "@/i18n/errors"
 
 function sameHabits(a, b) {
     return a.length === b.length && a.every((name) => b.includes(name))
@@ -34,6 +36,8 @@ export default function DayTracker({
     onSaveEntry, onDeleteEntry, onAddHabit, onRemoveHabit, onDirtyChange,
 }) {
 
+    const t = useTranslations()
+    const format = useFormatter()
     const moodLabelId = useId()
     const habitsLabelId = useId()
 
@@ -41,7 +45,7 @@ export default function DayTracker({
     const [mood, setMood] = useState(entry?.mood ?? null)
     const [doneHabits, setDoneHabits] = useState(() => entry?.habits ?? [])
     const [pending, setPending] = useState(null) // "save" | "delete" | null
-    const [error, setError] = useState("")
+    const [error, setError] = useState("") // error code, see errorMessage
     const [confirmingDelete, setConfirmingDelete] = useState(false)
 
     const habitNames = habits.map((habit) => habit.name)
@@ -89,9 +93,9 @@ export default function DayTracker({
         setError("")
         try {
             const result = await onAddHabit(name)
-            if (!result.success) setError(result.message)
+            if (!result.success) setError(result.error)
         } catch {
-            setError("Could not add the habit. Please try again.")
+            setError("addHabitFailed")
         }
     }
 
@@ -100,9 +104,9 @@ export default function DayTracker({
         setError("")
         try {
             const result = await onSaveEntry({ date: dateKey, mood, habits: habitsToSave })
-            if (!result.success) setError(result.message)
+            if (!result.success) setError(result.error)
         } catch {
-            setError("Could not save the entry. Please try again.")
+            setError("saveFailed")
         } finally {
             setPending(null)
         }
@@ -119,10 +123,10 @@ export default function DayTracker({
                 setDoneHabits([])
                 setConfirmingDelete(false)
             } else {
-                setError(result.message)
+                setError(result.error)
             }
         } catch {
-            setError("Could not delete the entry. Please try again.")
+            setError("deleteFailed")
         } finally {
             setPending(null)
         }
@@ -132,7 +136,7 @@ export default function DayTracker({
         <ManageHabitsDialog habits={habits} onAddHabit={onAddHabit} onRemoveHabit={onRemoveHabit}>
             <Button variant="outline" size="sm">
                 <Settings2 className="mr-2 h-4 w-4" aria-hidden="true" />
-                Manage habits
+                {t("checkIn.manageHabits")}
             </Button>
         </ManageHabitsDialog>
     )
@@ -141,7 +145,7 @@ export default function DayTracker({
         <Card id="check-in" className="scroll-mt-24 lg:col-span-2">
             <CardHeader className="flex-row items-start justify-between gap-4 space-y-0 px-4 sm:px-6">
                 <div className="space-y-1.5">
-                    <CardTitle as="h2" className="text-2xl">{isToday ? "Today's check-in" : "Check-in"}</CardTitle>
+                    <CardTitle as="h2" className="text-2xl">{t(isToday ? "checkIn.titleToday" : "checkIn.title")}</CardTitle>
                     <CardDescription>{dateLabel}</CardDescription>
                 </div>
                 {habits.length > 0 && <ProgressRing done={visibleDone.length} total={habits.length} />}
@@ -151,30 +155,28 @@ export default function DayTracker({
                 {/* MOOD */}
                 <section className="space-y-3">
                     <h3 id={moodLabelId} className="font-sans text-base font-medium">
-                        {isToday ? "How are you feeling?" : "How did you feel?"}
+                        {t(isToday ? "checkIn.moodQuestionToday" : "checkIn.moodQuestion")}
                     </h3>
                     <MoodPicker
                         value={mood}
                         onChange={chooseMood}
                         labelId={moodLabelId}
-                        emptyText={isToday ? "How does today feel?" : "How did this day feel?"}
+                        emptyText={t(isToday ? "checkIn.moodEmptyToday" : "checkIn.moodEmpty")}
                     />
                 </section>
 
                 {/* HABITS */}
                 <section className="space-y-3">
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                        <h3 id={habitsLabelId} className="font-sans text-base font-medium">Habits</h3>
+                        <h3 id={habitsLabelId} className="font-sans text-base font-medium">{t("checkIn.habits")}</h3>
                         {habits.length > 0 && manageButton}
                     </div>
 
                     {habits.length === 0 ? (
                         <div className="space-y-4 rounded-xl border border-dashed bg-muted/40 p-5 text-center">
                             <div className="space-y-1">
-                                <p className="font-medium">Start with one small habit</p>
-                                <p className="text-sm text-muted-foreground">
-                                    Pick a suggestion or add your own. You can tick them off here every day.
-                                </p>
+                                <p className="font-medium">{t("checkIn.emptyTitle")}</p>
+                                <p className="text-sm text-muted-foreground">{t("checkIn.emptyText")}</p>
                             </div>
                             <HabitSuggestions existing={habitNames} onAdd={addSuggestedHabit} className="[&_ul]:justify-center" />
                             {manageButton}
@@ -196,12 +198,12 @@ export default function DayTracker({
 
                     {hiddenHabits.length > 0 && (
                         <p className="text-xs text-muted-foreground">
-                            Also logged on this day: {hiddenHabits.join(", ")} (no longer in your habit list)
+                            {t("checkIn.hiddenHabits", { habits: format.list(hiddenHabits), count: hiddenHabits.length })}
                         </p>
                     )}
                 </section>
 
-                {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+                {error && <p role="alert" className="text-sm text-destructive">{errorMessage(t, error)}</p>}
 
                 <SaveBar
                     entry={entry}
@@ -224,16 +226,17 @@ export default function DayTracker({
 // Sticks to the bottom of the screen while there are unsaved changes.
 function SaveBar({ entry, mood, hasChanges, pending, confirmingDelete, onSave, onDiscard, onAskDelete, onCancelDelete, onDelete }) {
 
+    const t = useTranslations()
     const busy = pending !== null
 
     if (confirmingDelete) {
         return (
             <div className="flex flex-col gap-3 rounded-xl border border-destructive/40 bg-destructive/5 p-3 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm">Delete the whole entry for this day?</p>
+                <p className="text-sm">{t("checkIn.save.confirmDelete")}</p>
                 <div className="flex gap-2">
-                    <Button variant="ghost" size="sm" onClick={onCancelDelete} disabled={busy}>Cancel</Button>
+                    <Button variant="ghost" size="sm" onClick={onCancelDelete} disabled={busy}>{t("common.cancel")}</Button>
                     <Button variant="destructive" size="sm" onClick={onDelete} disabled={busy}>
-                        {pending === "delete" ? "Deleting…" : "Delete entry"}
+                        {t(pending === "delete" ? "checkIn.save.deleting" : "checkIn.save.deleteEntry")}
                     </Button>
                 </div>
             </div>
@@ -241,11 +244,11 @@ function SaveBar({ entry, mood, hasChanges, pending, confirmingDelete, onSave, o
     }
 
     let status
-    if (pending === "save") status = "Saving…"
-    else if (mood === null) status = "Choose your mood to save this day"
-    else if (!entry) status = "Not saved yet"
-    else if (hasChanges) status = "Unsaved changes"
-    else status = "Saved"
+    if (pending === "save") status = "saving"
+    else if (mood === null) status = "chooseMood"
+    else if (!entry) status = "notSaved"
+    else if (hasChanges) status = "unsaved"
+    else status = "saved"
 
     const saved = entry && !hasChanges && !busy
 
@@ -261,12 +264,12 @@ function SaveBar({ entry, mood, hasChanges, pending, confirmingDelete, onSave, o
             <p role="status" className={cn("flex items-center gap-2 text-sm", saved ? "text-primary" : "text-muted-foreground")}>
                 {saved && <CircleCheck className="h-4 w-4" aria-hidden="true" />}
                 {hasChanges && !busy && <span className="h-2 w-2 rounded-full bg-peach-strong" aria-hidden="true" />}
-                {status}
+                {t(`checkIn.save.${status}`)}
             </p>
 
             <div className="flex flex-wrap gap-2 sm:justify-end">
                 {hasChanges && (
-                    <Button variant="ghost" size="sm" onClick={onDiscard} disabled={busy}>Discard</Button>
+                    <Button variant="ghost" size="sm" onClick={onDiscard} disabled={busy}>{t("checkIn.save.discard")}</Button>
                 )}
                 {saved && (
                     <Button
@@ -276,12 +279,12 @@ function SaveBar({ entry, mood, hasChanges, pending, confirmingDelete, onSave, o
                         onClick={onAskDelete}
                     >
                         <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
-                        Delete entry
+                        {t("checkIn.save.deleteEntry")}
                     </Button>
                 )}
                 {!saved && (
                     <Button size="sm" className="min-w-28" onClick={onSave} disabled={busy || mood === null || !hasChanges}>
-                        {pending === "save" ? "Saving…" : entry ? "Update entry" : "Save entry"}
+                        {t(pending === "save" ? "checkIn.save.saving" : entry ? "checkIn.save.update" : "checkIn.save.saveEntry")}
                     </Button>
                 )}
             </div>

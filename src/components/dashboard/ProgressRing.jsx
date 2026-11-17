@@ -1,7 +1,11 @@
+"use client"
+
 import { cn } from "@/lib/utils"
+import { useTranslations } from "@/i18n/client"
 
 // Small ring that fills up as habits are done, with "done/total" inside.
 export default function ProgressRing({ done, total, className }) {
+    const t = useTranslations("checkIn")
     const radius = 20
     const circumference = 2 * Math.PI * radius
     const share = total === 0 ? 0 : done / total
@@ -9,7 +13,7 @@ export default function ProgressRing({ done, total, className }) {
     return (
         <div
             role="img"
-            aria-label={`${done} of ${total} habits done`}
+            aria-label={t("progress", { done, total })}
             className={cn("relative h-14 w-14 shrink-0", className)}
         >
             <svg viewBox="0 0 48 48" className="h-full w-full -rotate-90" aria-hidden="true">
@@ -24,7 +28,7 @@ export default function ProgressRing({ done, total, className }) {
                 />
             </svg>
             <span className="absolute inset-0 flex items-center justify-center text-sm font-semibold tabular-nums" aria-hidden="true">
-                {done}/{total}
+                {t("progressShort", { done, total })}
             </span>
         </div>
     )

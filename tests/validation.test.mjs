@@ -32,14 +32,14 @@ describe("validateEntryInput", () => {
         }
         const future = check({ ...valid, date: "2024-05-12" })
         assert.equal(future.ok, false)
-        assert.match(future.message, /future/)
+        assert.equal(future.error, "futureDate")
     })
 
     test("rejects moods that aren't whole numbers from 0 to 10", () => {
         for (const mood of [undefined, null, -1, 11, 7.5, "7", NaN, Infinity]) {
             const result = check({ ...valid, mood })
             assert.equal(result.ok, false, String(mood))
-            assert.match(result.message, /Mood/)
+            assert.equal(result.error, "invalidMood")
         }
     })
 
@@ -70,7 +70,9 @@ describe("normalizeHabitName", () => {
         for (const value of ["", "   ", undefined, null, 5, {}]) {
             assert.ok(normalizeHabitName(value).error, String(value))
         }
+        assert.equal(normalizeHabitName("   ").error, "habitNameRequired")
+        assert.equal(normalizeHabitName(5).error, "habitNameNotText")
         assert.ok(normalizeHabitName("x".repeat(HABIT_NAME_MAX_LENGTH)).name)
-        assert.ok(normalizeHabitName("x".repeat(HABIT_NAME_MAX_LENGTH + 1)).error)
+        assert.equal(normalizeHabitName("x".repeat(HABIT_NAME_MAX_LENGTH + 1)).error, "habitNameTooLong")
     })
 })

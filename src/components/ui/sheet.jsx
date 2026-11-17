@@ -5,6 +5,7 @@ import { cva } from "class-variance-authority";
 import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { useTranslations } from "@/i18n/client"
 
 const Sheet = SheetPrimitive.Root
 
@@ -47,7 +48,10 @@ const sheetVariants = cva(
 // initialFocus: CSS selector of the element to focus when the sheet opens.
 // Without it Radix focuses the first button and skips links on purpose.
 // (A string, so server components can set it.)
-const SheetContent = React.forwardRef(({ side = "right", className, children, initialFocus, onOpenAutoFocus, ...props }, ref) => (
+const SheetContent = React.forwardRef(({ side = "right", className, children, initialFocus, onOpenAutoFocus, ...props }, ref) => {
+  const t = useTranslations("common")
+
+  return (
   <SheetPortal>
     <SheetOverlay />
     <SheetPrimitive.Content
@@ -66,11 +70,12 @@ const SheetContent = React.forwardRef(({ side = "right", className, children, in
       <SheetPrimitive.Close
         className="absolute right-4 top-4 rounded-full p-1 opacity-70 ring-offset-background transition-opacity hover:bg-accent hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
         <X className="h-4 w-4" />
-        <span className="sr-only">Close</span>
+        <span className="sr-only">{t("close")}</span>
       </SheetPrimitive.Close>
     </SheetPrimitive.Content>
   </SheetPortal>
-))
+  )
+})
 SheetContent.displayName = SheetPrimitive.Content.displayName
 
 const SheetHeader = ({

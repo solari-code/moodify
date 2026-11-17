@@ -9,8 +9,9 @@ import { validateEntryInput } from "@/lib/validation"
 // One entry per user and day. Days are "YYYY-MM-DD" keys created in the
 // browser (see src/lib/dates.js).
 //
-// Invalid input returns { success: false, message } so the UI can show it;
-// missing authentication and storage failures throw.
+// Invalid input returns { success: false, error: code } so the UI can show
+// the translated message (errors.<code>); missing authentication and storage
+// failures throw.
 
 // The dashboard keeps its own state after changes, but the browser also caches
 // the page for back/forward navigation. Without this, going back to the
@@ -32,7 +33,7 @@ export async function saveEntry(input) {
 
     const result = validateEntryInput(input);
     if (!result.ok) {
-        return { success: false, message: result.message }
+        return { success: false, error: result.error }
     }
 
     try {
@@ -50,7 +51,7 @@ export async function deleteEntry(date) {
     const userId = await requireUserId();
 
     if (!isValidDateKey(date)) {
-        return { success: false, message: "Date must be a valid day in the format YYYY-MM-DD" }
+        return { success: false, error: "invalidDate" }
     }
 
     try {
@@ -59,7 +60,7 @@ export async function deleteEntry(date) {
         return deleted
             ? { success: true }
             // notFound: e.g. already deleted in another tab; the UI can drop it too
-            : { success: false, notFound: true, message: "There is no entry for this day" }
+            : { success: false, notFound: true, error: "entryNotFound" }
     } catch (error) {
         console.error("Error deleting entry:", error)
         throw error

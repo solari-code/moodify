@@ -2,9 +2,14 @@
 
 import { Check, Flame } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useFormatter, useTranslations } from "@/i18n/client"
 
 // A habit as a large toggle: check circle, name and current streak.
 export default function HabitRow({ name, done, streak, onToggle }) {
+
+    const t = useTranslations("checkIn")
+    const format = useFormatter()
+
     return (
         <button
             type="button"
@@ -30,8 +35,9 @@ export default function HabitRow({ name, done, streak, onToggle }) {
             {streak > 0 && (
                 <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-peach px-2 py-0.5 text-xs font-semibold text-peach-foreground">
                     <Flame className="h-3.5 w-3.5" aria-hidden="true" />
-                    {streak}
-                    <span className="sr-only">{streak === 1 ? "day" : "days"} streak</span>
+                    {/* visible: the number; screen readers: "12-day streak" */}
+                    <span aria-hidden="true">{format.number(streak)}</span>
+                    <span className="sr-only">{t("streak", { count: streak })}</span>
                 </span>
             )}
         </button>

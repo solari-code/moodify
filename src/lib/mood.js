@@ -18,14 +18,8 @@ export function moodEmoji(mood) {
     return MOOD_EMOJIS[mood] ?? "🤷‍♂️" // Unknown mood
 }
 
-// A short word for each mood value 0-10, shown next to the emoji.
-const MOOD_LABELS = [
-    "Awful", "Very bad", "Bad", "Low", "Meh", "Okay", "Fine", "Good", "Very good", "Great", "Amazing",
-]
-
-export function moodLabel(mood) {
-    return MOOD_LABELS[mood] ?? ""
-}
+// The short word for each mood value ("Awful" … "Amazing") is a translated
+// text: moodLabels.<0-10> in src/i18n/messages/.
 
 // CSS color of a mood on the theme's mood scale (--mood-0 … --mood-10 in
 // globals.css). Accepts averages too: the value is rounded and clamped to 0–10.

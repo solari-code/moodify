@@ -8,19 +8,21 @@ import { isValidDateKey, isFutureDateKey } from "@/lib/dates"
 import { createDemoData } from "@/lib/demoData"
 
 // Replaces the signed-in user's habits and entries with demo data.
+// Errors are returned as codes ({ success: false, error }); the UI shows
+// the translated text (errors.<code> in src/i18n/messages/).
 // Local mode only: checked first, before anything else is done.
 //
 // todayKey: the user's today ("YYYY-MM-DD" from the browser); the demo
 // entries end yesterday, so today stays free to try logging.
 export async function loadDemoData(todayKey) {
     if (!isLocalMode()) {
-        return { success: false, message: "Demo data is only available in local mode" }
+        return { success: false, error: "localModeOnly" }
     }
 
     const userId = await requireUserId();
 
     if (!isValidDateKey(todayKey) || isFutureDateKey(todayKey)) {
-        return { success: false, message: "Invalid date for today" }
+        return { success: false, error: "invalidToday" }
     }
 
     const store = getStore();

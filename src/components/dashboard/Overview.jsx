@@ -8,22 +8,7 @@ import { SegmentedControl } from "@/components/ui/segmented-control"
 import { MOOD_PERIODS, averageMood, habitCompletion, habitStreaks } from "@/lib/stats"
 import { moodColor, moodEmoji } from "@/lib/mood"
 import { cn } from "@/lib/utils"
-
-// Options of the period switch (the keys of MOOD_PERIODS), with short labels.
-const SHORT_LABELS = { week: "7 days", month: "30 days", year: "Year", total: "All" }
-const PERIOD_OPTIONS = Object.entries(MOOD_PERIODS).map(([value, period]) => ({
-    value,
-    label: SHORT_LABELS[value],
-    ariaLabel: period.label,
-}))
-
-function plural(count, singular, pluralForm = `${singular}s`) {
-    return `${count} ${count === 1 ? singular : pluralForm}`
-}
-
-function percent(rate) {
-    return `${Math.round(rate * 100)} %`
-}
+import { useFormatter, useTranslations } from "@/i18n/client"
 
 // Side card of the dashboard: average mood and habit completion for a
 // period, and each habit's streak and completion.
@@ -33,6 +18,8 @@ function percent(rate) {
 // todayKey: the user's today ("YYYY-MM-DD", from the browser)
 export default function Overview({ entries, habits, todayKey }) {
 
+    const t = useTranslations("dashboard.overview")
+    const format = useFormatter()
     const [period, setPeriod] = useState("week")
     const days = MOOD_PERIODS[period].days
 
@@ -47,42 +34,49 @@ export default function Overview({ entries, habits, todayKey }) {
     const streaks = useMemo(() => habitStreaks(entries, habits, todayKey), [entries, habits, todayKey])
     const bestStreak = Math.max(0, ...streaks.map((streak) => streak.streak))
 
+    // The period switch: short visible names ("7 days"); screen readers get the
+    // long name ("Last 7 days"), which contains the short one, so voice control
+    // users can say what they see.
+    const periodOptions = Object.keys(MOOD_PERIODS).map((value) => ({
+        value,
+        label: t(`periods.${value}.short`),
+        ariaLabel: t(`periods.${value}.long`),
+    }))
+
     return (
         <Card>
             <CardHeader className="space-y-4">
-                <CardTitle as="h2">Overview</CardTitle>
-                <SegmentedControl options={PERIOD_OPTIONS} value={period} onChange={setPeriod} ariaLabel="Period" />
+                <CardTitle as="h2">{t("title")}</CardTitle>
+                <SegmentedControl options={periodOptions} value={period} onChange={setPeriod} ariaLabel={t("periodLabel")} />
             </CardHeader>
 
             <CardContent className="space-y-6">
                 <div className="grid grid-cols-2 gap-3">
-                    <StatTile label="Average mood" testId="average-mood">
+                    <StatTile label={t("averageMood")} testId="average-mood">
                         {average === null ? (
                             <span className="text-muted-foreground">–</span>
                         ) : (
                             <span className="flex items-center gap-2">
                                 <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: moodColor(average) }} aria-hidden="true" />
-                                {average.toFixed(1)}
+                                {format.decimal(average)}
                                 <span className="font-emoji text-xl" aria-hidden="true">{moodEmoji(Math.round(average))}</span>
                             </span>
                         )}
                     </StatTile>
-                    <StatTile label="Habits done">
+                    <StatTile label={t("habitsDone")}>
                         {completion.rate === null
                             ? <span className="text-muted-foreground">–</span>
-                            : percent(completion.rate)}
+                            : format.percent(completion.rate)}
                     </StatTile>
                 </div>
                 <p className="-mt-3 text-xs text-muted-foreground">
-                    {count === 0
-                        ? "No entries in this period"
-                        : `Based on ${plural(count, "logged day")}`}
+                    {count === 0 ? t("noEntries") : t("basedOn", { count })}
                 </p>
 
                 <section className="space-y-3">
-                    <h3 className="font-sans text-base font-medium">Habits</h3>
+                    <h3 className="font-sans text-base font-medium">{t("habits")}</h3>
                     {habits.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">Add habits to see your streaks</p>
+                        <p className="text-sm text-muted-foreground">{t("noHabits")}</p>
                     ) : (
                         <ul className="space-y-4">
                             {streaks.map(({ name, streak }, index) => {
@@ -99,15 +93,20 @@ export default function Overview({ entries, habits, todayKey }) {
                                                 )}
                                             >
                                                 <Flame className="h-3.5 w-3.5" aria-hidden="true" />
-                                                {plural(streak, "day")}
-                                                <span className="sr-only"> streak</span>
+                                                {/* visible "3 days", screen readers "3 days streak" */}
+                                                {t.rich("streak", {
+                                                    count: streak,
+                                                    hidden: (chunks) => <span className="sr-only">{chunks}</span>,
+                                                })}
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <div
                                                 className="h-1.5 flex-1 overflow-hidden rounded-full bg-secondary"
                                                 role="img"
-                                                aria-label={rate === null ? `${name}: no logged days` : `${name}: done on ${percent(rate)} of logged days`}
+                                                aria-label={rate === null
+                                                    ? t("completionNone", { name })
+                                                    : t("completion", { name, percent: format.percent(rate) })}
                                             >
                                                 <div
                                                     className="h-full rounded-full bg-primary transition-[width] duration-500"
@@ -115,7 +114,7 @@ export default function Overview({ entries, habits, todayKey }) {
                                                 />
                                             </div>
                                             <span className="w-10 text-right text-xs tabular-nums text-muted-foreground" aria-hidden="true">
-                                                {rate === null ? "–" : percent(rate)}
+                                                {rate === null ? "–" : format.percent(rate)}
                                             </span>
                                         </div>
                                     </li>

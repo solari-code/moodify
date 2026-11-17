@@ -1,0 +1,377 @@
+{
+  "metadata": {
+    "default": {
+      "title": "Moodify",
+      "description": "Registra cada día cómo te sientes, marca tus hábitos y observa cómo cambian ambos con el tiempo."
+    },
+    "home": {
+      "title": "Moodify – Registra tu ánimo y tus hábitos",
+      "description": "Tómate un momento cada día: registra tu ánimo, marca tus hábitos y observa cómo cambian ambos con el tiempo."
+    },
+    "dashboard": {
+      "title": "Panel"
+    }
+  },
+  "common": {
+    "close": "Cerrar",
+    "howItWorks": "Cómo funciona",
+    "today": "Hoy",
+    "cancel": "Cancelar"
+  },
+  "languageSwitcher": {
+    "label": "Idioma",
+    "current": "<hidden>Idioma:</hidden> {language}"
+  },
+  "nav": {
+    "mainLabel": "Principal",
+    "mobileLabel": "Móvil",
+    "home": "Inicio de Moodify",
+    "dashboard": "Panel",
+    "openMenu": "Abrir el menú de navegación",
+    "menuDescription": "Navegación y cuenta",
+    "openUserMenu": "Abrir el menú de usuario",
+    "signOut": "Cerrar sesión"
+  },
+  "signIn": {
+    "demo": "Continuar como usuario de prueba",
+    "demoCompact": "Acceso de prueba",
+    "github": "Iniciar sesión con GitHub",
+    "compact": "Iniciar sesión"
+  },
+  "localMode": {
+    "badge": "Modo local",
+    "hint": "Acceso de prueba; los datos se guardan en .data/ en este equipo"
+  },
+  "footer": {
+    "label": "Pie de página",
+    "tagline": "Un lugar tranquilo para reencontrarte contigo."
+  },
+  "checkIn": {
+    "titleToday": "Tu registro de hoy",
+    "moodQuestionToday": "¿Cómo te sientes?",
+    "habits": "Hábitos",
+    "title": "Registro",
+    "moodQuestion": "¿Cómo te sentiste?",
+    "moodEmptyToday": "¿Qué tal va el día?",
+    "moodEmpty": "¿Qué tal fue este día?",
+    "moodOption": "{mood}, {label}",
+    "moodValue": "{mood} · {label}",
+    "manageHabits": "Gestionar hábitos",
+    "emptyTitle": "Empieza con un pequeño hábito",
+    "emptyText": "Elige una sugerencia o añade el tuyo. Podrás marcarlos aquí cada día.",
+    "hiddenHabits": "{count, plural, one {También registrado este día: {habits} (ya no está en tu lista de hábitos)} other {También registrados este día: {habits} (ya no están en tu lista de hábitos)}}",
+    "streak": "{count, plural, one {Racha de # día} other {Racha de # días}}",
+    "progress": "{total, plural, one {{done} de # hábito completado} other {{done} de # hábitos completados}}",
+    "progressShort": "{done}/{total}",
+    "save": {
+      "confirmDelete": "¿Eliminar todo el registro de este día?",
+      "deleting": "Eliminando…",
+      "deleteEntry": "Eliminar registro",
+      "saving": "Guardando…",
+      "chooseMood": "Elige tu ánimo para guardar este día",
+      "notSaved": "Aún sin guardar",
+      "unsaved": "Cambios sin guardar",
+      "saved": "Guardado",
+      "discard": "Descartar",
+      "update": "Actualizar registro",
+      "saveEntry": "Guardar registro"
+    }
+  },
+  "sampleHabits": {
+    "morningWalk": "Paseo matutino",
+    "read20Pages": "Leer 20 páginas",
+    "noPhoneAfter10pm": "Sin móvil después de las 22:00",
+    "meditate": "Meditar",
+    "drinkWater": "Beber 2 l de agua",
+    "stretch": "Estirar",
+    "journal": "Escribir un diario",
+    "sleepBy11pm": "Dormir antes de las 23:00"
+  },
+  "landing": {
+    "hero": {
+      "badge": "Registro de ánimo y hábitos",
+      "title": "¿Qué tal tu día, <accent>de verdad?</accent>",
+      "intro": "Moodify es un lugar tranquilo para reencontrarte contigo. Registra tu ánimo en unos segundos, marca los hábitos que te importan y descubre qué hace buenos tus días buenos.",
+      "openDashboard": "Abrir tu panel"
+    },
+    "preview": {
+      "description": "Pruébalo, no se guarda nada"
+    },
+    "steps": {
+      "title": "Basta con un minuto al día",
+      "intro": "Sin maratones de diario, sin presión. Solo un repaso breve y sincero.",
+      "checkIn": {
+        "title": "Conecta contigo",
+        "text": "Elige en una escala del 0 al 10 cómo te ha ido el día. Solo lleva unos segundos."
+      },
+      "habits": {
+        "title": "Marca tus hábitos",
+        "text": "Anota las pequeñas cosas que hiciste por ti: un paseo, unas páginas, acostarte temprano."
+      },
+      "patterns": {
+        "title": "Descubre tus patrones",
+        "text": "Con las semanas, el gráfico y el mapa de calor muestran qué mejora tu ánimo."
+      }
+    },
+    "insights": {
+      "title": "Mira cómo tu ánimo encuentra su ritmo",
+      "intro": "Cada registro suma un punto. Con el tiempo ves tus altibajos y qué hábitos acompañan a tus mejores días. Aquí, con unos meses de datos de ejemplo."
+    },
+    "features": {
+      "title": "Todo en un lugar tranquilo",
+      "moodCheckIn": {
+        "title": "Registro del ánimo",
+        "text": "Una escala tranquila del 0 al 10 con un emoji por paso. Lo bastante rápida para cada noche."
+      },
+      "moodOverTime": {
+        "title": "Tu ánimo a lo largo del tiempo",
+        "text": "Tu ánimo diario y su media de 7 días, desde la última semana hasta el año entero."
+      },
+      "ownHabits": {
+        "title": "Tus propios hábitos",
+        "text": "Añade los hábitos que te importan y márcalos junto a tu ánimo."
+      },
+      "heatmap": {
+        "title": "Mapa de calor de hábitos",
+        "text": "Un año de hábitos de un vistazo: cuanto más oscuro el día, más hiciste."
+      },
+      "streaks": {
+        "title": "Rachas",
+        "text": "Mira cuántos días seguidos mantuviste cada hábito, sin presión."
+      },
+      "lookBack": {
+        "title": "Mira atrás cuando quieras",
+        "text": "Abre cualquier día pasado para recordar cómo fue o completar un día que se te pasó."
+      }
+    },
+    "cta": {
+      "title": "Empieza por hoy",
+      "text": "Lleva menos de un minuto. En unas semanas empezarás a ver qué hábitos mejoran tu ánimo."
+    }
+  },
+  "dashboard": {
+    "loading": "Cargando el panel",
+    "todayLabel": "Hoy, {date}",
+    "header": {
+      "greeting": {
+        "night": "Hola",
+        "morning": "Buenos días",
+        "afternoon": "Buenas tardes",
+        "evening": "Buenas noches"
+      },
+      "checkInToday": "Tómate un momento para conectar contigo.",
+      "lookingBack": "Repasando el {date}.",
+      "backToToday": "Volver a hoy",
+      "pickDate": "Elegir fecha",
+      "chooseDate": "Elige una fecha",
+      "greetingNamed": {
+        "night": "Hola, {name}",
+        "morning": "Buenos días, {name}",
+        "afternoon": "Buenas tardes, {name}",
+        "evening": "Buenas noches, {name}"
+      }
+    },
+    "weekStrip": {
+      "previous": "Semana anterior",
+      "next": "Semana siguiente",
+      "weekOf": "Semana del {range}",
+      "dayWithMood": "{label}, {date}, ánimo {mood}",
+      "dayNoEntry": "{label}, {date}, sin registro",
+      "dayFuture": "{label}, {date}"
+    },
+    "calendar": {
+      "day": "{date}, {weekday}",
+      "withState": "{label}, {state}",
+      "today": "hoy",
+      "selected": "seleccionado",
+      "entrySaved": "registro guardado"
+    },
+    "unsaved": {
+      "title": "¿Descartar los cambios sin guardar?",
+      "description": "Tu registro del {day} aún no está guardado. Si cambias de día ahora, se perderán estos cambios.",
+      "discard": "Descartar cambios",
+      "keep": "Seguir editando"
+    },
+    "demoData": {
+      "intro": "<b>Modo local:</b> prueba el panel con unos meses de datos de ejemplo.",
+      "load": "Cargar datos de ejemplo",
+      "confirm": "Esto reemplaza todos tus hábitos y registros locales.",
+      "replace": "Reemplazar con datos de ejemplo",
+      "loading": "Cargando…",
+      "loaded": "Datos de ejemplo cargados: {habits, plural, one {# hábito} other {# hábitos}}, {entries, plural, one {# registro} other {# registros}}"
+    },
+    "overview": {
+      "title": "Resumen",
+      "periodLabel": "Periodo",
+      "periods": {
+        "week": {
+          "short": "7 días",
+          "long": "Últimos 7 días"
+        },
+        "month": {
+          "short": "30 días",
+          "long": "Últimos 30 días"
+        },
+        "year": {
+          "short": "Año",
+          "long": "Último año"
+        },
+        "total": {
+          "short": "Todo",
+          "long": "Todo el historial"
+        }
+      },
+      "averageMood": "Ánimo medio",
+      "habitsDone": "Hábitos cumplidos",
+      "noEntries": "No hay registros en este periodo",
+      "basedOn": "Según {count, plural, one {# día registrado} other {# días registrados}}",
+      "habits": "Hábitos",
+      "noHabits": "Añade hábitos para ver tus rachas",
+      "streak": "{count, plural, one {# día<hidden> de racha</hidden>} other {# días<hidden> de racha</hidden>}}",
+      "completion": "{name}: cumplido el {percent} de los días registrados",
+      "completionNone": "{name}: sin días registrados"
+    },
+    "moodChart": {
+      "title": "Tu ánimo a lo largo del tiempo",
+      "description": "Tu ánimo diario y su media de 7 días.",
+      "descriptionClickable": "Tu ánimo diario y su media de 7 días. Haz clic en un día para abrirlo.",
+      "descriptionYear": "La media de 7 días de tu ánimo a lo largo del año.",
+      "descriptionYearClickable": "La media de 7 días de tu ánimo a lo largo del año. Haz clic en un día para abrirlo.",
+      "rangeLabel": "Periodo del gráfico",
+      "ranges": {
+        "week": {
+          "short": "7 días",
+          "long": "Últimos 7 días"
+        },
+        "month": {
+          "short": "30 días",
+          "long": "Últimos 30 días"
+        },
+        "quarter": {
+          "short": "90 días",
+          "long": "Últimos 90 días"
+        },
+        "year": {
+          "short": "Año",
+          "long": "Último año"
+        }
+      },
+      "dailyMood": "Ánimo diario",
+      "average": "Media de 7 días",
+      "stats": "Media <b>{average}</b> · {count} de {days, plural, one {# día registrado} other {# días registrados}}",
+      "noEntries": "No hay registros en este periodo",
+      "summary": "{range}: media {average}, {count} de {days, plural, one {# día registrado} other {# días registrados}}.",
+      "summaryEmpty": "{range}: sin ánimo registrado.",
+      "empty": "Aún no hay ánimo registrado en este periodo",
+      "tooltip": {
+        "noEntry": "Sin registro",
+        "average": "Media de 7 días: <b>{average}</b>",
+        "more": "{count, plural, one {# más} other {# más}}"
+      }
+    },
+    "heatmap": {
+      "title": "Actividad de hábitos",
+      "description": "Cada cuadrado es un día: cuanto más oscuro, más hábitos cumpliste.",
+      "descriptionClickable": "Cada cuadrado es un día: cuanto más oscuro, más hábitos cumpliste. Haz clic en un día para abrirlo.",
+      "filterLabel": "Mostrar hábito",
+      "allHabits": "Todos los hábitos",
+      "gridLabel": "Actividad de hábitos, últimos 12 meses",
+      "keyboardHint": "Usa las flechas para moverte entre los días.",
+      "noEntries": "Aún no hay registros en los últimos 12 meses",
+      "summaryHabit": "{habit}: cumplido {count, plural, one {# día} other {# días}} en los últimos 12 meses.",
+      "summaryAll": "{active, plural, one {# día} other {# días}} con hábitos cumplidos, {logged, plural, one {# día registrado} other {# días registrados}} en los últimos 12 meses.",
+      "activeDays": "{count, plural, one {<b>#</b> día activo} other {<b>#</b> días activos}}",
+      "habitDays": "{count, plural, one {<b>#</b> día cumplido} other {<b>#</b> días cumplidos}}",
+      "loggedDays": "{count, plural, one {<b>#</b> día registrado} other {<b>#</b> días registrados}}",
+      "currentStreak": "Racha actual <b>{count, plural, one {# día} other {# días}}</b>",
+      "bestDay": "Mejor día <b>{count, plural, one {# hábito} other {# hábitos}}</b>",
+      "empty": "Registra unos días para ver tu actividad de hábitos",
+      "cell": "{date}: {text}",
+      "cellToday": "{date}, hoy: {text}",
+      "day": {
+        "noEntry": "Sin registro",
+        "habitDone": "{habit}: cumplido",
+        "habitNotDone": "{habit}: no cumplido",
+        "nothingDone": "Registrado, sin hábitos cumplidos",
+        "habitsDone": "{count, plural, one {# hábito cumplido} other {# hábitos cumplidos}}"
+      },
+      "legend": {
+        "noEntry": "Sin registro",
+        "nothingDone": "Registrado, sin hábitos",
+        "less": "Menos",
+        "more": "Más"
+      }
+    },
+    "doneHabits": "✓ {habits}"
+  },
+  "errors": {
+    "localModeOnly": "Los datos de ejemplo solo están disponibles en modo local",
+    "invalidToday": "La fecha de hoy no es válida",
+    "invalidDate": "La fecha debe ser un día válido con el formato AAAA-MM-DD",
+    "futureDate": "No se pueden crear registros de días futuros",
+    "invalidMood": "El ánimo debe ser un número entero del {moodMin} al {moodMax}",
+    "habitsNotList": "Los hábitos deben ser una lista",
+    "tooManyHabits": "Un registro puede tener como máximo {maxHabits, plural, one {# hábito} other {# hábitos}}",
+    "habitNameNotText": "El nombre del hábito debe ser un texto",
+    "habitNameRequired": "Escribe un nombre para el hábito",
+    "habitNameTooLong": "El nombre puede tener como máximo {maxLength, plural, one {# carácter} other {# caracteres}}",
+    "habitExists": "Este hábito ya existe",
+    "entryNotFound": "No hay ningún registro para este día",
+    "saveFailed": "No se pudo guardar el registro. Inténtalo de nuevo.",
+    "deleteFailed": "No se pudo eliminar el registro. Inténtalo de nuevo.",
+    "addHabitFailed": "No se pudo añadir el hábito. Inténtalo de nuevo.",
+    "removeHabitFailed": "No se pudo quitar el hábito. Inténtalo de nuevo.",
+    "loadDemoFailed": "No se pudieron cargar los datos de ejemplo. Inténtalo de nuevo.",
+    "unknown": "Algo salió mal. Inténtalo de nuevo."
+  },
+  "moodLabels": {
+    "0": "Horrible",
+    "1": "Muy mal",
+    "2": "Mal",
+    "3": "Bajón",
+    "4": "Regular",
+    "5": "Normal",
+    "6": "Bien",
+    "7": "Muy bien",
+    "8": "Genial",
+    "9": "Fenomenal",
+    "10": "Increíble"
+  },
+  "habitSuggestions": {
+    "label": "Hábitos sugeridos",
+    "add": "<hidden>Añadir hábito:</hidden> {name}"
+  },
+  "manageHabits": {
+    "title": "Tus hábitos",
+    "description": "Pequeñas cosas que quieres hacer con regularidad. Si quitas un hábito, se mantiene en tus registros anteriores.",
+    "empty": "Aún no tienes hábitos. Añade el primero abajo.",
+    "confirmRemove": "¿Quitar <b>{name}</b>?",
+    "removing": "Quitando…",
+    "remove": "Quitar",
+    "removeHabit": "Quitar el hábito {name}",
+    "addLabel": "Añadir un hábito",
+    "placeholder": "p. ej., Paseo por la tarde",
+    "add": "Añadir",
+    "ideas": "¿Necesitas ideas?"
+  },
+  "errorPages": {
+    "notFound": {
+      "title": "Página no encontrada",
+      "text": "Esta página no existe (o ya no existe). Puede que el enlace no sea correcto.",
+      "home": "Volver al inicio"
+    },
+    "error": {
+      "title": "No se pudo cargar esta página",
+      "text": "Algo salió mal por nuestra parte. Inténtalo de nuevo.",
+      "retry": "Reintentar",
+      "home": "Ir al inicio"
+    }
+  },
+  "authErrors": {
+    "title": "No se pudo iniciar sesión",
+    "canceled": "El inicio de sesión se canceló o no se completó. Puedes intentarlo de nuevo cuando quieras.",
+    "accountNotLinked": "Tu dirección de correo ya está vinculada a otra cuenta.",
+    "configuration": "El inicio de sesión no está disponible en este momento. Inténtalo de nuevo más tarde.",
+    "default": "Algo salió mal al iniciar sesión. Inténtalo de nuevo."
+  }
+}

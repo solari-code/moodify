@@ -6,26 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 import { SegmentedControl } from "@/components/ui/segmented-control"
 import { MOOD_CHART_RANGES, averageMood, moodSeries } from "@/lib/stats"
-import { moodColor, moodEmoji, moodLabel } from "@/lib/mood"
+import { moodColor, moodEmoji } from "@/lib/mood"
+import { useFormatter, useTranslations } from "@/i18n/client"
 import { fromDateKey } from "@/lib/dates"
 
-// "the last …" for each range, used in texts and labels
-const RANGE_PHRASES = { week: "7 days", month: "30 days", quarter: "90 days", year: "year" }
-
-const RANGE_OPTIONS = Object.entries(MOOD_CHART_RANGES).map(([value, range]) => ({
-    value,
-    label: range.label,
-    ariaLabel: `Last ${RANGE_PHRASES[value]}`,
-}))
-
-const CHART_CONFIG = {
-    mood: { label: "Daily mood", color: "hsl(var(--muted-foreground) / 0.45)" },
-    average: { label: "7-day average", color: "hsl(var(--primary))" },
-}
-
-const dayTickFormat = new Intl.DateTimeFormat(undefined, { day: "numeric", month: "short" })
-const monthTickFormat = new Intl.DateTimeFormat(undefined, { month: "short" })
-const tooltipDateFormat = new Intl.DateTimeFormat(undefined, { weekday: "short", day: "numeric", month: "short", year: "numeric" })
+// Habits listed in the tooltip before "and 2 more".
+const TOOLTIP_HABITS = 3
 
 // Line chart of the daily mood with its 7-day rolling average. Days without
 // an entry are gaps (not 0). Each logged day is a dot in its mood color;
@@ -38,9 +24,23 @@ const tooltipDateFormat = new Intl.DateTimeFormat(undefined, { weekday: "short",
 //              (optional: without it the chart is view-only, e.g. on the landing page)
 export default function MoodChart({ entries, todayKey, onSelectDay, titleAs = "h2" }) {
 
+    const t = useTranslations("dashboard.moodChart")
+    const format = useFormatter()
     const [range, setRange] = useState("month")
     const { days } = MOOD_CHART_RANGES[range]
-    const phrase = RANGE_PHRASES[range]
+
+    // Short visible names ("30 days"); screen readers get the long name
+    // ("Last 30 days"), which contains the short one (for voice control).
+    const rangeOptions = Object.keys(MOOD_CHART_RANGES).map((value) => ({
+        value,
+        label: t(`ranges.${value}.short`),
+        ariaLabel: t(`ranges.${value}.long`),
+    }))
+
+    const chartConfig = {
+        mood: { label: t("dailyMood"), color: "hsl(var(--muted-foreground) / 0.45)" },
+        average: { label: t("average"), color: "hsl(var(--primary))" },
+    }
 
     const series = useMemo(() => moodSeries(entries, { todayKey, days }), [entries, todayKey, days])
     const { average, count } = useMemo(() => averageMood(entries, { todayKey, days }), [entries, todayKey, days])
@@ -70,27 +70,27 @@ export default function MoodChart({ entries, todayKey, onSelectDay, titleAs = "h
     // A year is labeled by month, with ticks on the 1st of each month;
     // shorter ranges by day, spaced by Recharts.
     const byMonth = days > 90
-    const formatTick = (dateKey) => (byMonth ? monthTickFormat : dayTickFormat).format(fromDateKey(dateKey))
+    const formatTick = (dateKey) => format.date(fromDateKey(dateKey), byMonth ? { month: "short" } : { day: "numeric", month: "short" })
     const monthTicks = useMemo(
         () => series.filter((point) => point.date.endsWith("-01")).map((point) => point.date),
         [series]
     )
 
+    const rangeName = t(`ranges.${range}.long`)
     const summary = count === 0
-        ? `No moods logged in the last ${phrase}.`
-        : `Average ${average.toFixed(1)} over the last ${phrase}, ${count} of ${days} days logged.`
+        ? t("summaryEmpty", { range: rangeName })
+        : t("summary", { range: rangeName, average: format.decimal(average), count, days })
 
     return (
         <Card>
             <CardHeader className="flex flex-col gap-4 space-y-0 sm:flex-row sm:items-start sm:justify-between">
                 <div className="space-y-1.5">
-                    <CardTitle as={titleAs}>Mood over time</CardTitle>
+                    <CardTitle as={titleAs}>{t("title")}</CardTitle>
                     <CardDescription>
-                        {showDaily ? "Your daily mood and its 7-day average." : "Your 7-day average mood over the year."}
-                        {onSelectDay && " Click a day to open it."}
+                        {t(`${showDaily ? "description" : "descriptionYear"}${onSelectDay ? "Clickable" : ""}`)}
                     </CardDescription>
                 </div>
-                <SegmentedControl options={RANGE_OPTIONS} value={range} onChange={setRange} ariaLabel="Chart range" className="self-start" />
+                <SegmentedControl options={rangeOptions} value={range} onChange={setRange} ariaLabel={t("rangeLabel")} className="shrink-0 self-start" />
             </CardHeader>
 
             <CardContent className="space-y-4">
@@ -102,28 +102,26 @@ export default function MoodChart({ entries, todayKey, onSelectDay, titleAs = "h
                                     <span key={mood} className="h-2 w-2 rounded-full" style={{ background: moodColor(mood) }} />
                                 ))}
                             </span>
-                            Daily mood
+                            {t("dailyMood")}
                         </span>}
                         <span className="flex items-center gap-1.5">
                             <span className="h-0.5 w-4 rounded-full bg-primary" />
-                            7-day average
+                            {t("average")}
                         </span>
                     </div>
                     <p aria-live="polite">
-                        {count === 0 ? (
-                            "No entries in this range"
-                        ) : (
-                            <>
-                                Average <span className="font-semibold text-foreground">{average.toFixed(1)}</span>
-                                {" · "}{count} of {days} days logged
-                            </>
-                        )}
+                        {count === 0 ? t("noEntries") : t.rich("stats", {
+                            average: format.decimal(average),
+                            count,
+                            days,
+                            b: (chunks) => <span className="font-semibold text-foreground">{chunks}</span>,
+                        })}
                     </p>
                 </div>
 
                 <div className="relative">
                     <p className="sr-only">{summary}</p>
-                    <ChartContainer config={CHART_CONFIG} className="h-56 sm:h-72">
+                    <ChartContainer config={chartConfig} className="h-56 sm:h-72">
                         <ComposedChart
                             data={series}
                             margin={{ top: 8, right: 8, bottom: 0, left: -20 }}
@@ -146,7 +144,7 @@ export default function MoodChart({ entries, todayKey, onSelectDay, titleAs = "h
                                 ticks={byMonth ? monthTicks : undefined}
                                 tickFormatter={formatTick}
                             />
-                            <YAxis domain={[0, 10]} ticks={[0, 5, 10]} tickLine={false} axisLine={false} width={40} />
+                            <YAxis domain={[0, 10]} ticks={[0, 5, 10]} tickFormatter={(value) => format.number(value)} tickLine={false} axisLine={false} width={40} />
                             <ChartTooltip
                                 cursor={{ strokeDasharray: "3 4" }}
                                 content={<MoodTooltip />}
@@ -154,7 +152,7 @@ export default function MoodChart({ entries, todayKey, onSelectDay, titleAs = "h
                             />
                             <Area
                                 dataKey="average"
-                                name="7-day average"
+                                name={t("average")}
                                 type="monotone"
                                 stroke="var(--color-average)"
                                 strokeWidth={2.5}
@@ -166,7 +164,7 @@ export default function MoodChart({ entries, todayKey, onSelectDay, titleAs = "h
                             {showDaily && (
                                 <Line
                                     dataKey="mood"
-                                    name="Daily mood"
+                                    name={t("dailyMood")}
                                     type="linear"
                                     stroke="var(--color-mood)"
                                     strokeWidth={1.5}
@@ -181,7 +179,7 @@ export default function MoodChart({ entries, todayKey, onSelectDay, titleAs = "h
                     {count === 0 && (
                         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                             <p className="rounded-full bg-card/90 px-4 py-2 text-sm text-muted-foreground shadow-soft">
-                                No moods logged in the last {phrase} yet
+                                {t("empty")}
                             </p>
                         </div>
                     )}
@@ -192,32 +190,41 @@ export default function MoodChart({ entries, todayKey, onSelectDay, titleAs = "h
 }
 
 function MoodTooltip({ active, payload }) {
+    const t = useTranslations()
+    const format = useFormatter()
     if (!active || !payload?.length) return null
     const point = payload[0].payload
 
-    const shownHabits = point.habits.slice(0, 3)
-    const moreHabits = point.habits.length - shownHabits.length
+    // "Walk, Read, Meditate, and 2 more"
+    const listed = point.habits.slice(0, TOOLTIP_HABITS)
+    const more = point.habits.length - listed.length
+    const habitList = format.list(more > 0 ? [...listed, t("dashboard.moodChart.tooltip.more", { count: more })] : listed)
 
     return (
         <div className="min-w-44 max-w-60 space-y-1.5 rounded-lg border bg-popover px-3 py-2 text-xs text-popover-foreground shadow-soft-lg">
-            <p className="font-medium">{tooltipDateFormat.format(fromDateKey(point.date))}</p>
+            <p className="font-medium">
+                {format.capitalize(format.date(fromDateKey(point.date), { weekday: "short", day: "numeric", month: "short", year: "numeric" }))}
+            </p>
             {point.mood === null ? (
-                <p className="text-muted-foreground">No entry</p>
+                <p className="text-muted-foreground">{t("dashboard.moodChart.tooltip.noEntry")}</p>
             ) : (
                 <p className="flex items-center gap-1.5">
                     <span className="h-2.5 w-2.5 rounded-full" style={{ background: moodColor(point.mood) }} />
                     <span className="font-emoji text-sm leading-none">{moodEmoji(point.mood)}</span>
-                    <span className="font-semibold">{point.mood}</span>
-                    <span className="text-muted-foreground">{moodLabel(point.mood)}</span>
+                    <span className="font-semibold">{format.number(point.mood)}</span>
+                    <span className="text-muted-foreground">{t(`moodLabels.${point.mood}`)}</span>
                 </p>
             )}
             {point.average !== null && (
-                <p className="text-muted-foreground">7-day average: <span className="font-medium text-foreground">{point.average.toFixed(1)}</span></p>
-            )}
-            {shownHabits.length > 0 && (
                 <p className="text-muted-foreground">
-                    ✓ {shownHabits.join(", ")}{moreHabits > 0 ? ` +${moreHabits} more` : ""}
+                    {t.rich("dashboard.moodChart.tooltip.average", {
+                        average: format.decimal(point.average),
+                        b: (chunks) => <span className="font-medium text-foreground">{chunks}</span>,
+                    })}
                 </p>
+            )}
+            {listed.length > 0 && (
+                <p className="text-muted-foreground">{t("dashboard.doneHabits", { habits: habitList })}</p>
             )}
         </div>
     )

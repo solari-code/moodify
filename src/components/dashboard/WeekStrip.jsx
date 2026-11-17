@@ -6,11 +6,8 @@ import { Button } from "@/components/ui/button"
 import { addDays, fromDateKey, startOfWeek } from "@/lib/dates"
 import { moodColor } from "@/lib/mood"
 import { cn } from "@/lib/utils"
-
-const weekdayFormat = new Intl.DateTimeFormat(undefined, { weekday: "short" })
-const dayFormat = new Intl.DateTimeFormat(undefined, { day: "numeric" })
-const fullFormat = new Intl.DateTimeFormat(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" })
-const rangeFormat = new Intl.DateTimeFormat(undefined, { day: "numeric", month: "short", year: "numeric" })
+import { useFormatter, useTranslations } from "@/i18n/client"
+import { FULL_DATE } from "@/i18n/formatter"
 
 // One week (Monday to Sunday) to pick a day from, with the mood of each
 // logged day as a colored dot. The arrows page through the weeks without
@@ -21,6 +18,9 @@ const rangeFormat = new Intl.DateTimeFormat(undefined, { day: "numeric", month: 
 // entries:  { "YYYY-MM-DD": entry }
 // onSelect: called with the picked day key
 export default function WeekStrip({ selectedKey, todayKey, entries, onSelect }) {
+
+    const t = useTranslations("dashboard.weekStrip")
+    const format = useFormatter()
 
     const [weekStart, setWeekStart] = useState(() => startOfWeek(selectedKey))
     const [shownFor, setShownFor] = useState(selectedKey)
@@ -35,7 +35,7 @@ export default function WeekStrip({ selectedKey, todayKey, entries, onSelect }) 
     const days = Array.from({ length: 7 }, (_, index) => addDays(weekStart, index))
     const weekEnd = days[6]
     const isCurrentWeek = weekEnd >= todayKey
-    const rangeLabel = rangeFormat.formatRange(fromDateKey(weekStart), fromDateKey(weekEnd))
+    const rangeLabel = format.dateRange(fromDateKey(weekStart), fromDateKey(weekEnd), { day: "numeric", month: "short", year: "numeric" })
 
     return (
         <div className="rounded-xl border bg-card p-2 shadow-soft sm:p-3">
@@ -44,7 +44,7 @@ export default function WeekStrip({ selectedKey, todayKey, entries, onSelect }) 
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8"
-                    aria-label="Previous week"
+                    aria-label={t("previous")}
                     onClick={() => setWeekStart((start) => addDays(start, -7))}
                 >
                     <ChevronLeft className="h-4 w-4" />
@@ -54,7 +54,7 @@ export default function WeekStrip({ selectedKey, todayKey, entries, onSelect }) 
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8"
-                    aria-label="Next week"
+                    aria-label={t("next")}
                     disabled={isCurrentWeek}
                     onClick={() => setWeekStart((start) => addDays(start, 7))}
                 >
@@ -62,7 +62,7 @@ export default function WeekStrip({ selectedKey, todayKey, entries, onSelect }) 
                 </Button>
             </div>
 
-            <ol className="grid grid-cols-7 gap-1 sm:gap-2" aria-label={`Week of ${rangeLabel}`}>
+            <ol className="grid grid-cols-7 gap-1 sm:gap-2" aria-label={t("weekOf", { range: rangeLabel })}>
                 {days.map((dateKey) => (
                     <li key={dateKey}>
                         <DayButton
@@ -81,13 +81,22 @@ export default function WeekStrip({ selectedKey, todayKey, entries, onSelect }) 
 }
 
 function DayButton({ dateKey, entry, selected, isToday, future, onSelect }) {
+    const t = useTranslations()
+    const format = useFormatter()
     const date = fromDateKey(dateKey)
     const hasMood = entry !== undefined
 
+    const topLabel = isToday ? t("common.today") : format.date(date, { weekday: "short" })
+    const dayNumber = format.date(date, { day: "numeric" })
+
     // The visible text ("Mon 9" / "Today 15") starts the accessible name, so
-    // voice control users can say what they see; the rest is screen reader only.
-    let extra = `, ${fullFormat.format(date)}`
-    if (!future) extra += hasMood ? `, mood ${entry.mood}` : ", no entry"
+    // voice control users can say what they see.
+    const values = { label: `${topLabel} ${dayNumber}`, date: format.date(date, FULL_DATE) }
+    const accessibleName = future
+        ? t("dashboard.weekStrip.dayFuture", values)
+        : hasMood
+            ? t("dashboard.weekStrip.dayWithMood", { ...values, mood: entry.mood })
+            : t("dashboard.weekStrip.dayNoEntry", values)
 
     return (
         <button
@@ -96,6 +105,7 @@ function DayButton({ dateKey, entry, selected, isToday, future, onSelect }) {
             disabled={future}
             aria-pressed={selected}
             aria-current={isToday ? "date" : undefined}
+            aria-label={accessibleName}
             className={cn(
                 "flex w-full flex-col items-center gap-1 rounded-xl py-2 transition-colors",
                 "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
@@ -111,10 +121,9 @@ function DayButton({ dateKey, entry, selected, isToday, future, onSelect }) {
                 selected ? "text-primary-foreground" : "text-muted-foreground",
                 isToday && !selected && "text-secondary-foreground"
             )}>
-                {isToday ? "Today" : weekdayFormat.format(date)}
+                {topLabel}
             </span>
-            <span className="text-lg font-semibold leading-none tabular-nums">{dayFormat.format(date)}</span>
-            <span className="sr-only">{extra}</span>
+            <span className="text-lg font-semibold leading-none tabular-nums">{dayNumber}</span>
             <span
                 aria-hidden="true"
                 className={cn("h-2 w-2 rounded-full", selected && hasMood && "ring-1 ring-primary-foreground/80")}

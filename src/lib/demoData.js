@@ -13,6 +13,16 @@ import { addDays } from "./dates.js"
 
 export const DEMO_HABITS = ["Morning walk", "Read 20 pages", "No phone after 10 pm", "Meditate"]
 
+// The demo data is stored in English (local mode). The landing page shows it
+// as sample data in the visitor's language: these are the keys of the
+// translated names (sampleHabits.<key> in src/i18n/messages/).
+export const DEMO_HABIT_KEYS = {
+    "Morning walk": "morningWalk",
+    "Read 20 pages": "read20Pages",
+    "No phone after 10 pm": "noPhoneAfter10pm",
+    "Meditate": "meditate",
+}
+
 const RECENT_DAYS = 120         // daily history before today
 const SKIP_CHANCE = 0.15        // share of days without entry
 const STREAK_DAYS = 12          // Morning walk streak up to yesterday

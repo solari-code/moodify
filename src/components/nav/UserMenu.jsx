@@ -7,9 +7,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import UserAvatar from "./UserAvatar"
 import SignOutMenuItem from "./SignOutMenuItem"
+import { getTranslations } from "@/i18n/server"
 
-export default function UserMenu({ user }) {
+export default async function UserMenu({ user }) {
 
+    const t = await getTranslations("nav")
     const name = user?.name
     const email = user?.email
 
@@ -19,7 +21,7 @@ export default function UserMenu({ user }) {
                 {/* a real button, so the menu can be opened with the keyboard */}
                 <button
                     type="button"
-                    aria-label="Open user menu"
+                    aria-label={t("openUserMenu")}
                     className="rounded-full ring-offset-background transition-shadow hover:ring-2 hover:ring-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                     <UserAvatar user={user} className="h-9 w-9" />

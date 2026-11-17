@@ -8,15 +8,19 @@ import { Separator } from "@/components/ui/separator"
 import { Menu, LogOut, LayoutDashboard } from "lucide-react"
 import { Logo } from "@/components/brand/Logo"
 import ButtonSignIn from "./ButtonSignIn"
+import LanguageSwitcher from "./LanguageSwitcher"
 import { signOutAction } from "@/app/actions/auth"
+import { getTranslations } from "@/i18n/server"
 
 
-export default function MobileNav({ user, localMode = false }) {
+export default async function MobileNav({ user, localMode = false }) {
+
+    const t = await getTranslations("nav")
 
     return (
         <NavSheet>
             <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label="Open navigation menu">
+                <Button variant="ghost" size="icon" aria-label={t("openMenu")}>
                     <Menu className="h-5 w-5" />
                 </Button>
             </SheetTrigger>
@@ -26,9 +30,9 @@ export default function MobileNav({ user, localMode = false }) {
                 <SheetTitle className="flex items-center">
                     <Logo />
                 </SheetTitle>
-                <SheetDescription className="sr-only">Navigation and account</SheetDescription>
+                <SheetDescription className="sr-only">{t("menuDescription")}</SheetDescription>
 
-                <nav aria-label="Mobile" className="flex flex-1 flex-col gap-4">
+                <nav aria-label={t("mobileLabel")} className="flex flex-1 flex-col gap-4">
                     {user ? (
                         <>
                             <div className="flex items-center gap-3 rounded-xl bg-card p-3 shadow-soft">
@@ -40,13 +44,13 @@ export default function MobileNav({ user, localMode = false }) {
                             </div>
                             <NavLink href="/dashboard" className="px-4 py-2.5">
                                 <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
-                                Dashboard
+                                {t("dashboard")}
                             </NavLink>
                             <Separator />
                             <form action={signOutAction}>
                                 <Button type="submit" variant="outline" className="w-full">
                                     <LogOut className="mr-2 h-4 w-4" />
-                                    Sign Out
+                                    {t("signOut")}
                                 </Button>
                             </form>
                         </>
@@ -55,6 +59,7 @@ export default function MobileNav({ user, localMode = false }) {
                     )}
                 </nav>
 
+                <LanguageSwitcher variant="block" />
                 {localMode && <LocalModeBadge className="self-start" />}
             </SheetContent>
         </NavSheet>

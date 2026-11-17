@@ -3,24 +3,34 @@
 import { useMemo, useState } from "react"
 import MoodChart from "@/components/dashboard/MoodChart"
 import HabitHeatmap from "@/components/dashboard/HabitHeatmap"
-import { createDemoData } from "@/lib/demoData"
+import { DEMO_HABIT_KEYS, createDemoData } from "@/lib/demoData"
 import { toDateKey } from "@/lib/dates"
 import { useIsClient } from "@/hooks/useIsClient"
+import { useTranslations } from "@/i18n/client"
 
 // The dashboard's mood chart and habit heatmap with a few months of sample
-// data, for the landing page. View-only (no day to open).
+// data, for the landing page. View-only (no day to open). The sample habits
+// are shown in the visitor's language.
 //
 // Rendered in the browser only, like the dashboard: the dates depend on the
-// visitor's today and language, which the server doesn't know.
+// visitor's today, which the server doesn't know.
 export default function LandingInsights() {
 
     const isClient = useIsClient()
+    const t = useTranslations("sampleHabits")
     const [todayKey] = useState(() => toDateKey(new Date()))
 
     const demo = useMemo(() => {
         const { habits, entries } = createDemoData(todayKey)
-        return { habits, entries: Object.fromEntries(entries.map((entry) => [entry.date, entry])) }
-    }, [todayKey])
+        const translate = (name) => t(DEMO_HABIT_KEYS[name])
+        return {
+            habits: habits.map((habit) => ({ ...habit, name: translate(habit.name) })),
+            entries: Object.fromEntries(entries.map((entry) => [
+                entry.date,
+                { ...entry, habits: entry.habits.map(translate) },
+            ])),
+        }
+    }, [todayKey, t])
 
     if (!isClient) {
         return (

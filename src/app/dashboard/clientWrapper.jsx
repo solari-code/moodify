@@ -17,8 +17,8 @@ import { loadDemoData } from "@/app/actions/demo"
 import { toDateKey, fromDateKey } from "@/lib/dates"
 import { habitStreaks } from "@/lib/stats"
 import { useIsClient } from "@/hooks/useIsClient"
-
-const dayLabelFormat = new Intl.DateTimeFormat(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" })
+import { useFormatter, useTranslations } from "@/i18n/client"
+import { FULL_DATE } from "@/i18n/formatter"
 
 // Holds the dashboard state: the selected day, all entries (by day) and the
 // habit list. Changes go to the server first; the state is updated from the
@@ -28,6 +28,8 @@ const dayLabelFormat = new Intl.DateTimeFormat(undefined, { weekday: "long", day
 export default function ClientWrapper({ habits: initialHabits, entries: initialEntries, userName = "", localMode = false }) {
 
     const isClient = useIsClient();
+    const t = useTranslations("dashboard");
+    const format = useFormatter();
 
     // The user's "today" is only known in the browser (timezone). On the server
     // this value is never used, because only a placeholder is rendered there.
@@ -114,7 +116,7 @@ export default function ClientWrapper({ habits: initialHabits, entries: initialE
     const todayKey = toDateKey(today);
     const dateKey = selectedKey ?? todayKey;
     const isToday = dateKey === todayKey;
-    const dayLabel = dayLabelFormat.format(fromDateKey(dateKey));
+    const dayLabel = format.date(fromDateKey(dateKey), FULL_DATE);
 
     // All day changes (week strip, calendar, "Back to today") go through here.
     function selectDay(key) {
@@ -160,7 +162,7 @@ export default function ClientWrapper({ habits: initialHabits, entries: initialE
                     key={`${dateKey}-${dataVersion}`}
                     dateKey={dateKey}
                     isToday={isToday}
-                    dateLabel={`${isToday ? "Today, " : ""}${dayLabel}`}
+                    dateLabel={isToday ? t("todayLabel", { date: dayLabel }) : format.capitalize(dayLabel)}
                     entry={entries[dateKey] ?? null}
                     habits={habits}
                     streaks={streaks}
@@ -197,8 +199,10 @@ export default function ClientWrapper({ habits: initialHabits, entries: initialE
 // Rendered on the server and during hydration, until the browser's date is
 // known. Same layout as the dashboard, so nothing jumps when it appears.
 function DashboardPlaceholder() {
+    const t = useTranslations("dashboard");
+
     return (
-        <div className="container mx-auto max-w-6xl space-y-6 px-4 py-8" aria-busy="true" aria-label="Loading dashboard">
+        <div className="container mx-auto max-w-6xl space-y-6 px-4 py-8" aria-busy="true" aria-label={t("loading")}>
             <div className="space-y-3">
                 <div className="h-4 w-40 animate-pulse rounded-full bg-muted" />
                 <div className="h-9 w-72 max-w-full animate-pulse rounded-full bg-muted" />

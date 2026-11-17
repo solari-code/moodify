@@ -5,13 +5,15 @@ import { getStore } from "@/lib/store"
 import { requireUserId } from "@/lib/requireUser"
 import { normalizeHabitName } from "@/lib/validation"
 
+// Invalid input returns { success: false, error: code } (see entries.js).
+
 export async function addHabit(habit) {
 
     const userId = await requireUserId();
     const { name, error } = normalizeHabitName(habit?.name);
 
     if (error) {
-        return { success: false, message: error }
+        return { success: false, error }
     }
 
     try {
@@ -19,14 +21,14 @@ export async function addHabit(habit) {
         const habits = await store.getHabits(userId);
 
         if (habits.some((h) => h.name.toLowerCase() === name.toLowerCase())) {
-            return { success: false, message: "This habit already exists" }
+            return { success: false, error: "habitExists" }
         }
 
         await store.addHabit(userId, { name });
         // see revalidateDashboard in entries.js
         revalidatePath("/dashboard");
         // the stored habit (name trimmed), so the client shows exactly what was saved
-        return { success: true, message: "Habit added successfully", habit: { name } }
+        return { success: true, habit: { name } }
     } catch (error) {
         console.error("Error adding habit:", error)
         throw error
@@ -47,7 +49,7 @@ export async function removeHabit(habitName) {
     try {
         await getStore().removeHabit(userId, habitName);
         revalidatePath("/dashboard");
-        return { success: true, message: "Habit removed successfully" }
+        return { success: true }
     } catch (error) {
         console.error("Error removing habit:", error)
         throw error

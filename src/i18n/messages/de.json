@@ -1,0 +1,377 @@
+{
+  "metadata": {
+    "default": {
+      "title": "Moodify",
+      "description": "Halte jeden Tag fest, wie du dich fühlst, hake deine Gewohnheiten ab und sieh, wie sich beides mit der Zeit verändert."
+    },
+    "home": {
+      "title": "Moodify – Stimmung und Gewohnheiten festhalten",
+      "description": "Check dich jeden Tag kurz bei dir selbst ein: Halte deine Stimmung fest, hake deine Gewohnheiten ab und sieh, wie sich beides mit der Zeit verändert."
+    },
+    "dashboard": {
+      "title": "Dashboard"
+    }
+  },
+  "common": {
+    "close": "Schließen",
+    "howItWorks": "So funktioniert's",
+    "today": "Heute",
+    "cancel": "Abbrechen"
+  },
+  "languageSwitcher": {
+    "label": "Sprache",
+    "current": "<hidden>Sprache:</hidden> {language}"
+  },
+  "nav": {
+    "mainLabel": "Haupt",
+    "mobileLabel": "Mobil",
+    "home": "Moodify Startseite",
+    "dashboard": "Dashboard",
+    "openMenu": "Navigationsmenü öffnen",
+    "menuDescription": "Navigation und Konto",
+    "openUserMenu": "Benutzermenü öffnen",
+    "signOut": "Abmelden"
+  },
+  "signIn": {
+    "demo": "Als Demo-Nutzer fortfahren",
+    "demoCompact": "Demo-Login",
+    "github": "Mit GitHub anmelden",
+    "compact": "Anmelden"
+  },
+  "localMode": {
+    "badge": "Lokaler Modus",
+    "hint": "Demo-Login, die Daten liegen in .data/ auf diesem Rechner"
+  },
+  "footer": {
+    "label": "Fußzeile",
+    "tagline": "Ein ruhiger Ort, um bei dir selbst einzuchecken."
+  },
+  "checkIn": {
+    "titleToday": "Dein Check-in für heute",
+    "moodQuestionToday": "Wie fühlst du dich?",
+    "habits": "Gewohnheiten",
+    "title": "Check-in",
+    "moodQuestion": "Wie hast du dich gefühlt?",
+    "moodEmptyToday": "Wie fühlt sich der Tag an?",
+    "moodEmpty": "Wie hat sich dieser Tag angefühlt?",
+    "moodOption": "{mood}, {label}",
+    "moodValue": "{mood} · {label}",
+    "manageHabits": "Gewohnheiten verwalten",
+    "emptyTitle": "Fang mit einer kleinen Gewohnheit an",
+    "emptyText": "Wähl einen Vorschlag oder füg deine eigene hinzu. Du kannst sie hier jeden Tag abhaken.",
+    "hiddenHabits": "{count, plural, one {Außerdem an diesem Tag erledigt: {habits} (nicht mehr in deiner Liste)} other {Außerdem an diesem Tag erledigt: {habits} (nicht mehr in deiner Liste)}}",
+    "streak": "{count, plural, one {# Tag in Folge} other {# Tage in Folge}}",
+    "progress": "{done} von {total, plural, one {# Gewohnheit} other {# Gewohnheiten}} erledigt",
+    "progressShort": "{done}/{total}",
+    "save": {
+      "confirmDelete": "Den ganzen Eintrag für diesen Tag löschen?",
+      "deleting": "Wird gelöscht…",
+      "deleteEntry": "Eintrag löschen",
+      "saving": "Wird gespeichert…",
+      "chooseMood": "Wähle deine Stimmung, um diesen Tag zu speichern",
+      "notSaved": "Noch nicht gespeichert",
+      "unsaved": "Ungespeicherte Änderungen",
+      "saved": "Gespeichert",
+      "discard": "Verwerfen",
+      "update": "Eintrag aktualisieren",
+      "saveEntry": "Eintrag speichern"
+    }
+  },
+  "sampleHabits": {
+    "morningWalk": "Morgenspaziergang",
+    "read20Pages": "20 Seiten lesen",
+    "noPhoneAfter10pm": "Kein Handy nach 22 Uhr",
+    "meditate": "Meditieren",
+    "drinkWater": "2 l Wasser trinken",
+    "stretch": "Dehnen",
+    "journal": "Tagebuch schreiben",
+    "sleepBy11pm": "Vor 23 Uhr schlafen"
+  },
+  "landing": {
+    "hero": {
+      "badge": "Stimmungs- & Gewohnheitstracker",
+      "title": "Wie war dein Tag – <accent>wirklich?</accent>",
+      "intro": "Moodify ist ein ruhiger Ort, um bei dir selbst einzuchecken. Halte deine Stimmung in wenigen Sekunden fest, hake die Gewohnheiten ab, die dir wichtig sind, und finde heraus, was deine guten Tage gut macht.",
+      "openDashboard": "Zu deinem Dashboard"
+    },
+    "preview": {
+      "description": "Probier es aus, nichts wird gespeichert"
+    },
+    "steps": {
+      "title": "Eine Minute am Tag reicht",
+      "intro": "Kein Tagebuch-Marathon, kein Druck. Nur ein kurzer, ehrlicher Check-in.",
+      "checkIn": {
+        "title": "Hör kurz in dich hinein",
+        "text": "Wähle auf einer Skala von 0 bis 10, wie sich der Tag angefühlt hat. Das dauert nur ein paar Sekunden."
+      },
+      "habits": {
+        "title": "Hake deine Gewohnheiten ab",
+        "text": "Markiere die kleinen Dinge, die du für dich getan hast: ein Spaziergang, ein paar Seiten, früh ins Bett."
+      },
+      "patterns": {
+        "title": "Erkenne deine Muster",
+        "text": "Mit den Wochen zeigen dir Diagramm und Heatmap, was deine Stimmung hebt."
+      }
+    },
+    "insights": {
+      "title": "Sieh zu, wie deine Stimmung ihren Rhythmus findet",
+      "intro": "Jeder Check-in ist ein neuer Punkt. Mit der Zeit siehst du deine Hochs und Tiefs und welche Gewohnheiten mit deinen besseren Tagen einhergehen. Hier mit Beispieldaten aus ein paar Monaten."
+    },
+    "features": {
+      "title": "Alles an einem ruhigen Ort",
+      "moodCheckIn": {
+        "title": "Stimmungs-Check-in",
+        "text": "Eine ruhige Skala von 0 bis 10 mit einem Emoji pro Stufe. Schnell genug für jeden Abend."
+      },
+      "moodOverTime": {
+        "title": "Stimmung im Verlauf",
+        "text": "Deine tägliche Stimmung und ihr 7-Tage-Durchschnitt, von der letzten Woche bis zum ganzen Jahr."
+      },
+      "ownHabits": {
+        "title": "Deine eigenen Gewohnheiten",
+        "text": "Füge die Gewohnheiten hinzu, die dir wichtig sind, und hake sie neben deiner Stimmung ab."
+      },
+      "heatmap": {
+        "title": "Gewohnheits-Heatmap",
+        "text": "Ein Jahr Gewohnheiten auf einen Blick: Je dunkler der Tag, desto mehr hast du geschafft."
+      },
+      "streaks": {
+        "title": "Serien",
+        "text": "Sieh, wie viele Tage in Folge du jede Gewohnheit durchgehalten hast, ganz ohne Druck."
+      },
+      "lookBack": {
+        "title": "Jederzeit zurückblicken",
+        "text": "Öffne einen vergangenen Tag, um dich zu erinnern, wie er war, oder trag einen verpassten Tag nach."
+      }
+    },
+    "cta": {
+      "title": "Fang mit heute an",
+      "text": "Es dauert weniger als eine Minute. Nach ein paar Wochen siehst du, welche Gewohnheiten deine Stimmung heben."
+    }
+  },
+  "dashboard": {
+    "loading": "Dashboard wird geladen",
+    "todayLabel": "Heute, {date}",
+    "header": {
+      "greeting": {
+        "night": "Hallo",
+        "morning": "Guten Morgen",
+        "afternoon": "Guten Tag",
+        "evening": "Guten Abend"
+      },
+      "checkInToday": "Nimm dir einen Moment, um bei dir selbst einzuchecken.",
+      "lookingBack": "Rückblick auf {date}.",
+      "backToToday": "Zurück zu heute",
+      "pickDate": "Datum wählen",
+      "chooseDate": "Datum auswählen",
+      "greetingNamed": {
+        "night": "Hallo, {name}",
+        "morning": "Guten Morgen, {name}",
+        "afternoon": "Guten Tag, {name}",
+        "evening": "Guten Abend, {name}"
+      }
+    },
+    "weekStrip": {
+      "previous": "Vorherige Woche",
+      "next": "Nächste Woche",
+      "weekOf": "Woche vom {range}",
+      "dayWithMood": "{label}, {date}, Stimmung {mood}",
+      "dayNoEntry": "{label}, {date}, kein Eintrag",
+      "dayFuture": "{label}, {date}"
+    },
+    "calendar": {
+      "day": "{date}, {weekday}",
+      "withState": "{label}, {state}",
+      "today": "heute",
+      "selected": "ausgewählt",
+      "entrySaved": "Eintrag gespeichert"
+    },
+    "unsaved": {
+      "title": "Ungespeicherte Änderungen verwerfen?",
+      "description": "Dein Check-in für {day} ist noch nicht gespeichert. Wenn du jetzt den Tag wechselst, gehen diese Änderungen verloren.",
+      "discard": "Änderungen verwerfen",
+      "keep": "Weiter bearbeiten"
+    },
+    "demoData": {
+      "intro": "<b>Lokaler Modus:</b> Probier das Dashboard mit Beispieldaten aus ein paar Monaten aus.",
+      "load": "Demodaten laden",
+      "confirm": "Das ersetzt alle deine lokalen Gewohnheiten und Einträge.",
+      "replace": "Durch Demodaten ersetzen",
+      "loading": "Wird geladen…",
+      "loaded": "Demodaten geladen: {habits, plural, one {# Gewohnheit} other {# Gewohnheiten}}, {entries, plural, one {# Eintrag} other {# Einträge}}"
+    },
+    "overview": {
+      "title": "Überblick",
+      "periodLabel": "Zeitraum",
+      "periods": {
+        "week": {
+          "short": "7 Tage",
+          "long": "Letzte 7 Tage"
+        },
+        "month": {
+          "short": "30 Tage",
+          "long": "Letzte 30 Tage"
+        },
+        "year": {
+          "short": "Jahr",
+          "long": "Letztes Jahr"
+        },
+        "total": {
+          "short": "Alle",
+          "long": "Alle Einträge"
+        }
+      },
+      "averageMood": "Stimmung im Schnitt",
+      "habitsDone": "Gewohnheiten erledigt",
+      "noEntries": "Keine Einträge in diesem Zeitraum",
+      "basedOn": "Basierend auf {count, plural, one {# erfassten Tag} other {# erfassten Tagen}}",
+      "habits": "Gewohnheiten",
+      "noHabits": "Füg Gewohnheiten hinzu, um deine Serien zu sehen",
+      "streak": "{count, plural, one {# Tag<hidden> in Folge</hidden>} other {# Tage<hidden> in Folge</hidden>}}",
+      "completion": "{name}: an {percent} der erfassten Tage erledigt",
+      "completionNone": "{name}: keine erfassten Tage"
+    },
+    "moodChart": {
+      "title": "Stimmung im Verlauf",
+      "description": "Deine tägliche Stimmung und ihr 7-Tage-Durchschnitt.",
+      "descriptionClickable": "Deine tägliche Stimmung und ihr 7-Tage-Durchschnitt. Klick auf einen Tag, um ihn zu öffnen.",
+      "descriptionYear": "Dein 7-Tage-Durchschnitt der Stimmung über das Jahr.",
+      "descriptionYearClickable": "Dein 7-Tage-Durchschnitt der Stimmung über das Jahr. Klick auf einen Tag, um ihn zu öffnen.",
+      "rangeLabel": "Zeitraum des Diagramms",
+      "ranges": {
+        "week": {
+          "short": "7 Tage",
+          "long": "Letzte 7 Tage"
+        },
+        "month": {
+          "short": "30 Tage",
+          "long": "Letzte 30 Tage"
+        },
+        "quarter": {
+          "short": "90 Tage",
+          "long": "Letzte 90 Tage"
+        },
+        "year": {
+          "short": "Jahr",
+          "long": "Letztes Jahr"
+        }
+      },
+      "dailyMood": "Tägliche Stimmung",
+      "average": "7-Tage-Durchschnitt",
+      "stats": "Durchschnitt <b>{average}</b> · {count} von {days, plural, one {# Tag} other {# Tagen}} erfasst",
+      "noEntries": "Keine Einträge in diesem Zeitraum",
+      "summary": "{range}: Durchschnitt {average}, {count} von {days, plural, one {# Tag} other {# Tagen}} erfasst.",
+      "summaryEmpty": "{range}: keine Stimmung erfasst.",
+      "empty": "In diesem Zeitraum noch keine Stimmung erfasst",
+      "tooltip": {
+        "noEntry": "Kein Eintrag",
+        "average": "7-Tage-Durchschnitt: <b>{average}</b>",
+        "more": "{count, plural, one {# weitere} other {# weitere}}"
+      }
+    },
+    "heatmap": {
+      "title": "Gewohnheits-Aktivität",
+      "description": "Jedes Kästchen ist ein Tag: Je dunkler, desto mehr Gewohnheiten hast du geschafft.",
+      "descriptionClickable": "Jedes Kästchen ist ein Tag: Je dunkler, desto mehr Gewohnheiten hast du geschafft. Klick auf einen Tag, um ihn zu öffnen.",
+      "filterLabel": "Gewohnheit anzeigen",
+      "allHabits": "Alle Gewohnheiten",
+      "gridLabel": "Gewohnheits-Aktivität, letzte 12 Monate",
+      "keyboardHint": "Mit den Pfeiltasten wechselst du zwischen den Tagen.",
+      "noEntries": "Noch keine Einträge in den letzten 12 Monaten",
+      "summaryHabit": "{habit}: an {count, plural, one {# Tag} other {# Tagen}} in den letzten 12 Monaten erledigt.",
+      "summaryAll": "{active, plural, one {# Tag} other {# Tage}} mit erledigten Gewohnheiten, {logged, plural, one {# Tag} other {# Tage}} erfasst in den letzten 12 Monaten.",
+      "activeDays": "{count, plural, one {<b>#</b> aktiver Tag} other {<b>#</b> aktive Tage}}",
+      "habitDays": "{count, plural, one {<b>#</b> Tag erledigt} other {<b>#</b> Tage erledigt}}",
+      "loggedDays": "{count, plural, one {<b>#</b> Tag erfasst} other {<b>#</b> Tage erfasst}}",
+      "currentStreak": "Aktuelle Serie <b>{count, plural, one {# Tag} other {# Tage}}</b>",
+      "bestDay": "Bester Tag <b>{count, plural, one {# Gewohnheit} other {# Gewohnheiten}}</b>",
+      "empty": "Erfasse ein paar Tage, um deine Gewohnheiten hier zu sehen",
+      "cell": "{date}: {text}",
+      "cellToday": "{date}, heute: {text}",
+      "day": {
+        "noEntry": "Kein Eintrag",
+        "habitDone": "{habit} erledigt",
+        "habitNotDone": "{habit} nicht erledigt",
+        "nothingDone": "Erfasst, keine Gewohnheit erledigt",
+        "habitsDone": "{count, plural, one {# Gewohnheit erledigt} other {# Gewohnheiten erledigt}}"
+      },
+      "legend": {
+        "noEntry": "Kein Eintrag",
+        "nothingDone": "Erfasst, keine Gewohnheit",
+        "less": "Weniger",
+        "more": "Mehr"
+      }
+    },
+    "doneHabits": "✓ {habits}"
+  },
+  "errors": {
+    "localModeOnly": "Demodaten gibt es nur im lokalen Modus",
+    "invalidToday": "Ungültiges Datum für heute",
+    "invalidDate": "Das Datum muss ein gültiger Tag im Format JJJJ-MM-TT sein",
+    "futureDate": "Einträge für zukünftige Tage sind nicht möglich",
+    "invalidMood": "Die Stimmung muss eine ganze Zahl von {moodMin} bis {moodMax} sein",
+    "habitsNotList": "Die Gewohnheiten müssen eine Liste sein",
+    "tooManyHabits": "Ein Eintrag kann höchstens {maxHabits, plural, one {# Gewohnheit} other {# Gewohnheiten}} enthalten",
+    "habitNameNotText": "Der Name der Gewohnheit muss ein Text sein",
+    "habitNameRequired": "Bitte gib einen Namen für die Gewohnheit ein",
+    "habitNameTooLong": "Der Name darf höchstens {maxLength, plural, one {# Zeichen} other {# Zeichen}} lang sein",
+    "habitExists": "Diese Gewohnheit gibt es schon",
+    "entryNotFound": "Für diesen Tag gibt es keinen Eintrag",
+    "saveFailed": "Der Eintrag konnte nicht gespeichert werden. Bitte versuch es noch einmal.",
+    "deleteFailed": "Der Eintrag konnte nicht gelöscht werden. Bitte versuch es noch einmal.",
+    "addHabitFailed": "Die Gewohnheit konnte nicht hinzugefügt werden. Bitte versuch es noch einmal.",
+    "removeHabitFailed": "Die Gewohnheit konnte nicht entfernt werden. Bitte versuch es noch einmal.",
+    "loadDemoFailed": "Die Demodaten konnten nicht geladen werden. Bitte versuch es noch einmal.",
+    "unknown": "Etwas ist schiefgelaufen. Bitte versuch es noch einmal."
+  },
+  "moodLabels": {
+    "0": "Furchtbar",
+    "1": "Sehr schlecht",
+    "2": "Schlecht",
+    "3": "Gedrückt",
+    "4": "Naja",
+    "5": "Okay",
+    "6": "Ganz gut",
+    "7": "Gut",
+    "8": "Sehr gut",
+    "9": "Großartig",
+    "10": "Fantastisch"
+  },
+  "habitSuggestions": {
+    "label": "Vorgeschlagene Gewohnheiten",
+    "add": "<hidden>Gewohnheit hinzufügen:</hidden> {name}"
+  },
+  "manageHabits": {
+    "title": "Deine Gewohnheiten",
+    "description": "Kleine Dinge, die du regelmäßig tun möchtest. Wenn du eine Gewohnheit entfernst, bleibt sie in deinen bisherigen Einträgen erhalten.",
+    "empty": "Noch keine Gewohnheiten. Füg unten deine erste hinzu.",
+    "confirmRemove": "<b>{name}</b> entfernen?",
+    "removing": "Wird entfernt…",
+    "remove": "Entfernen",
+    "removeHabit": "Gewohnheit {name} entfernen",
+    "addLabel": "Gewohnheit hinzufügen",
+    "placeholder": "z. B. Abendspaziergang",
+    "add": "Hinzufügen",
+    "ideas": "Brauchst du Ideen?"
+  },
+  "errorPages": {
+    "notFound": {
+      "title": "Seite nicht gefunden",
+      "text": "Diese Seite gibt es nicht (mehr). Vielleicht ist der Link falsch.",
+      "home": "Zurück zur Startseite"
+    },
+    "error": {
+      "title": "Diese Seite konnte nicht geladen werden",
+      "text": "Bei uns ist etwas schiefgelaufen. Bitte versuch es noch einmal.",
+      "retry": "Erneut versuchen",
+      "home": "Zur Startseite"
+    }
+  },
+  "authErrors": {
+    "title": "Anmeldung hat nicht geklappt",
+    "canceled": "Die Anmeldung wurde abgebrochen oder nicht abgeschlossen. Du kannst es jederzeit noch einmal versuchen.",
+    "accountNotLinked": "Deine E-Mail-Adresse ist bereits mit einem anderen Konto verknüpft.",
+    "configuration": "Die Anmeldung ist gerade nicht verfügbar. Bitte versuch es später noch einmal.",
+    "default": "Bei der Anmeldung ist etwas schiefgelaufen. Bitte versuch es noch einmal."
+  }
+}

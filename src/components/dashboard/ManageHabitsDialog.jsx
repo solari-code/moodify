@@ -15,6 +15,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import HabitSuggestions from "@/components/dashboard/HabitSuggestions"
 import { HABIT_NAME_MAX_LENGTH } from "@/lib/validation"
+import { useTranslations } from "@/i18n/client"
+import { errorMessage } from "@/i18n/errors"
 
 // Dialog to add and remove habits. Removing asks for confirmation and keeps
 // the habit in past entries (their history stays intact).
@@ -24,12 +26,13 @@ import { HABIT_NAME_MAX_LENGTH } from "@/lib/validation"
 // children: the trigger button
 export default function ManageHabitsDialog({ habits, onAddHabit, onRemoveHabit, children }) {
 
+    const t = useTranslations()
     const inputId = useId()
     const errorId = useId()
     const [open, setOpen] = useState(false)
     const [newHabit, setNewHabit] = useState("")
     const [adding, setAdding] = useState(false)
-    const [error, setError] = useState("")
+    const [error, setError] = useState("") // error code, see errorMessage
     const [confirming, setConfirming] = useState(null) // habit name waiting for "Remove"
     const [removing, setRemoving] = useState(null)
 
@@ -49,18 +52,18 @@ export default function ManageHabitsDialog({ habits, onAddHabit, onRemoveHabit, 
         if (!name) return
         setError("")
         if (habitNames.some((existing) => existing.toLowerCase() === name.toLowerCase())) {
-            setError("This habit already exists :)")
+            setError("habitExists")
             return
         }
         try {
             const result = await onAddHabit(name)
             if (!result.success) {
-                setError(result.message)
+                setError(result.error)
                 return
             }
             setNewHabit("")
         } catch {
-            setError("Could not add the habit. Please try again.")
+            setError("addHabitFailed")
         }
     }
 
@@ -79,10 +82,10 @@ export default function ManageHabitsDialog({ habits, onAddHabit, onRemoveHabit, 
         setError("")
         try {
             const result = await onRemoveHabit(name)
-            if (!result.success) setError(result.message)
+            if (!result.success) setError(result.error)
             setConfirming(null)
         } catch {
-            setError("Could not remove the habit. Please try again.")
+            setError("removeHabitFailed")
         } finally {
             setRemoving(null)
         }
@@ -93,15 +96,13 @@ export default function ManageHabitsDialog({ habits, onAddHabit, onRemoveHabit, 
             <DialogTrigger asChild>{children}</DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Your habits</DialogTitle>
-                    <DialogDescription>
-                        Small things you want to do regularly. Removing a habit keeps it in your past entries.
-                    </DialogDescription>
+                    <DialogTitle>{t("manageHabits.title")}</DialogTitle>
+                    <DialogDescription>{t("manageHabits.description")}</DialogDescription>
                 </DialogHeader>
 
                 {habits.length === 0 ? (
                     <p className="rounded-xl bg-muted px-4 py-6 text-center text-sm text-muted-foreground">
-                        No habits yet. Add your first one below.
+                        {t("manageHabits.empty")}
                     </p>
                 ) : (
                     <ul className="divide-y rounded-xl border">
@@ -110,14 +111,17 @@ export default function ManageHabitsDialog({ habits, onAddHabit, onRemoveHabit, 
                                 {confirming === name ? (
                                     <div className="flex flex-wrap items-center justify-between gap-2">
                                         <p className="text-sm">
-                                            Remove <span className="font-medium">{name}</span>?
+                                            {t.rich("manageHabits.confirmRemove", {
+                                                name,
+                                                b: (chunks) => <span className="font-medium">{chunks}</span>,
+                                            })}
                                         </p>
                                         <div className="flex gap-2">
                                             <Button variant="ghost" size="sm" onClick={() => setConfirming(null)} disabled={removing !== null}>
-                                                Cancel
+                                                {t("common.cancel")}
                                             </Button>
                                             <Button variant="destructive" size="sm" onClick={() => remove(name)} disabled={removing !== null}>
-                                                {removing === name ? "Removing…" : "Remove"}
+                                                {removing === name ? t("manageHabits.removing") : t("manageHabits.remove")}
                                             </Button>
                                         </div>
                                     </div>
@@ -128,7 +132,7 @@ export default function ManageHabitsDialog({ habits, onAddHabit, onRemoveHabit, 
                                             variant="ghost"
                                             size="icon"
                                             className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                                            aria-label={`Remove habit ${name}`}
+                                            aria-label={t("manageHabits.removeHabit", { name })}
                                             onClick={() => setConfirming(name)}
                                         >
                                             <Trash2 className="h-4 w-4" />
@@ -141,11 +145,11 @@ export default function ManageHabitsDialog({ habits, onAddHabit, onRemoveHabit, 
                 )}
 
                 <form onSubmit={submit} className="space-y-2">
-                    <Label htmlFor={inputId}>Add a habit</Label>
+                    <Label htmlFor={inputId}>{t("manageHabits.addLabel")}</Label>
                     <div className="flex gap-2">
                         <Input
                             id={inputId}
-                            placeholder="e.g. Evening walk"
+                            placeholder={t("manageHabits.placeholder")}
                             value={newHabit}
                             maxLength={HABIT_NAME_MAX_LENGTH}
                             onChange={(event) => { setNewHabit(event.target.value); setError("") }}
@@ -154,13 +158,13 @@ export default function ManageHabitsDialog({ habits, onAddHabit, onRemoveHabit, 
                         />
                         <Button type="submit" disabled={adding || !newHabit.trim()}>
                             <Plus className="mr-1 h-4 w-4" aria-hidden="true" />
-                            Add
+                            {t("manageHabits.add")}
                         </Button>
                     </div>
-                    {error && <p id={errorId} role="alert" className="text-sm text-destructive">{error}</p>}
+                    {error && <p id={errorId} role="alert" className="text-sm text-destructive">{errorMessage(t, error)}</p>}
                 </form>
 
-                <HabitSuggestions existing={habitNames} onAdd={add} label="Need ideas?" />
+                <HabitSuggestions existing={habitNames} onAdd={add} label={t("manageHabits.ideas")} />
             </DialogContent>
         </Dialog>
     )

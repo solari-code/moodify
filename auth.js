@@ -42,10 +42,21 @@ function githubConfig() {
     }
 }
 
+// Auth.js' own pages (sign-in, sign-out, error, verify-request) are only
+// available in English. Instead, users always land on the translated landing
+// page, which has the sign-in button (errors arrive there as ?error=…).
+const PAGES = {
+    signIn: "/",
+    signOut: "/",
+    error: "/",
+    verifyRequest: "/",
+}
+
 // The config is built per request (lazy initialisation), so the mode check
 // only runs at request time and `next build` works without any env vars.
 export const { handlers, signIn, signOut, auth } = NextAuth(() => ({
     ...(isLocalMode() ? localConfig() : githubConfig()),
+    pages: PAGES,
     callbacks: {
         session: async ({ session, user, token }) => {
             if (session?.user) {

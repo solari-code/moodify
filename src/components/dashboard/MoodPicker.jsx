@@ -1,9 +1,10 @@
 "use client"
 
 import { useRef } from "react"
-import { moodColor, moodEmoji, moodLabel } from "@/lib/mood"
+import { moodColor, moodEmoji } from "@/lib/mood"
 import { MOOD_MIN, MOOD_MAX } from "@/lib/validation"
 import { cn } from "@/lib/utils"
+import { useTranslations } from "@/i18n/client"
 
 const MOODS = Array.from({ length: MOOD_MAX - MOOD_MIN + 1 }, (_, index) => MOOD_MIN + index)
 
@@ -14,10 +15,12 @@ const MOODS = Array.from({ length: MOOD_MAX - MOOD_MIN + 1 }, (_, index) => MOOD
 // value:     chosen mood or null
 // onChange:  called with the new mood
 // labelId:   id of the element that labels the group
-// emptyText: shown while no mood is chosen
-export default function MoodPicker({ value, onChange, labelId, emptyText = "How does today feel?" }) {
+// emptyText: shown while no mood is chosen (default: "How does today feel?")
+export default function MoodPicker({ value, onChange, labelId, emptyText }) {
 
+    const t = useTranslations()
     const buttons = useRef([])
+    const label = (mood) => t(`moodLabels.${mood}`)
 
     function choose(mood) {
         onChange(mood)
@@ -57,7 +60,7 @@ export default function MoodPicker({ value, onChange, labelId, emptyText = "How 
                             type="button"
                             role="radio"
                             aria-checked={checked}
-                            aria-label={`${mood}, ${moodLabel(mood)}`}
+                            aria-label={t("checkIn.moodOption", { mood, label: label(mood) })}
                             tabIndex={focusable ? 0 : -1}
                             onClick={() => choose(mood)}
                             className={cn(
@@ -87,15 +90,17 @@ export default function MoodPicker({ value, onChange, labelId, emptyText = "How 
             </div>
 
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>{moodLabel(MOOD_MIN)}</span>
+                <span>{label(MOOD_MIN)}</span>
                 <span
                     aria-live="polite"
                     className="rounded-full px-3 py-1 text-sm font-semibold text-foreground"
                     style={value === null ? undefined : { background: moodColor(value, 0.18) }}
                 >
-                    {value === null ? emptyText : `${value} · ${moodLabel(value)}`}
+                    {value === null
+                        ? emptyText ?? t("checkIn.moodEmptyToday")
+                        : t("checkIn.moodValue", { mood: value, label: label(value) })}
                 </span>
-                <span>{moodLabel(MOOD_MAX)}</span>
+                <span>{label(MOOD_MAX)}</span>
             </div>
         </div>
     )

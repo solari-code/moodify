@@ -8,13 +8,14 @@ import { addDays, startOfWeek } from "./dates.js"
 //
 // Relative imports only, so this runs in Node's test runner directly.
 
-// Periods of the "Average Mood" select. Rolling windows that include today;
-// days: null = all entries.
+// Periods of the overview. Rolling windows that include today;
+// days: null = all entries. (Their names are translated texts:
+// dashboard.overview.periods.<key> in src/i18n/messages/.)
 export const MOOD_PERIODS = {
-    week: { label: "Last Week", days: 7 },
-    month: { label: "Last Month", days: 30 },
-    year: { label: "Last Year", days: 365 },
-    total: { label: "Total", days: null },
+    week: { days: 7 },
+    month: { days: 30 },
+    year: { days: 365 },
+    total: { days: null },
 }
 
 // Average mood of the logged days in the period.
@@ -74,11 +75,12 @@ function loggedDaysInPeriod(entriesByDate, todayKey, days) {
 // Mood chart
 
 // Ranges of the mood chart. Rolling windows that include today.
+// (Names: dashboard.moodChart.ranges.<key> in src/i18n/messages/.)
 export const MOOD_CHART_RANGES = {
-    week: { label: "7 days", days: 7 },
-    month: { label: "30 days", days: 30 },
-    quarter: { label: "90 days", days: 90 },
-    year: { label: "1 year", days: 365 },
+    week: { days: 7 },
+    month: { days: 30 },
+    quarter: { days: 90 },
+    year: { days: 365 },
 }
 
 // One point per calendar day of the range, oldest first:

@@ -1,39 +1,36 @@
-import localFont from "next/font/local";
 import "./globals.css";
 
 import Nav from "@/components/nav/Nav";
 import Footer from "@/components/nav/Footer";
+import { I18nProvider } from "@/i18n/client";
+import { getLocale, getMessages, getTranslations } from "@/i18n/server";
+import { fontHeading, fontSans } from "./fonts";
 
-// Body text: Figtree, a friendly, open sans-serif.
-const fontSans = localFont({
-  src: "./fonts/FigtreeVF-latin.woff2",
-  variable: "--font-sans",
-  weight: "300 900",
-  display: "swap",
-});
-// Headings: Fraunces with its "soft" axis (rounded terminals), see globals.css.
-const fontHeading = localFont({
-  src: "./fonts/FrauncesSoftVF-latin.woff2",
-  variable: "--font-heading",
-  weight: "100 900",
-  display: "swap",
-});
+export async function generateMetadata() {
+  const t = await getTranslations("metadata.default");
 
-export const metadata = {
-  // pages below the root can set a short title, e.g. "Dashboard" -> "Dashboard – Moodify"
-  title: { default: "Moodify", template: "%s – Moodify" },
-  description: "Log how you feel each day, tick off your habits and see how both change over time.",
-};
+  return {
+    // pages below the root can set a short title, e.g. "Dashboard" -> "Dashboard – Moodify"
+    title: { default: t("title"), template: `%s – ${t("title")}` },
+    description: t("description"),
+  };
+}
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  // the language of this request (switcher choice, browser languages or English)
+  const locale = await getLocale();
+  const messages = await getMessages(locale);
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body
         className={`${fontSans.variable} ${fontHeading.variable} font-sans antialiased`}
       >
-        <Nav />
-        <main>{children}</main>
-        <Footer />
+        <I18nProvider locale={locale} messages={messages}>
+          <Nav />
+          <main>{children}</main>
+          <Footer />
+        </I18nProvider>
       </body>
     </html>
   );
