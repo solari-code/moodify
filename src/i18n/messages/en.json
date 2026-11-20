@@ -10,6 +10,9 @@
     },
     "dashboard": {
       "title": "Dashboard"
+    },
+    "settings": {
+      "title": "Profile settings"
     }
   },
   "common": {
@@ -30,6 +33,7 @@
     "openMenu": "Open navigation menu",
     "menuDescription": "Navigation and account",
     "openUserMenu": "Open user menu",
+    "settings": "Profile settings",
     "signOut": "Sign Out"
   },
   "signIn": {
@@ -189,6 +193,7 @@
     "unsaved": {
       "title": "Discard unsaved changes?",
       "description": "Your check-in for {day} isn't saved yet. If you switch days now, these changes are lost.",
+      "descriptionLeave": "Your check-in for {day} isn't saved yet. If you leave this page now, these changes are lost.",
       "discard": "Discard changes",
       "keep": "Keep editing"
     },
@@ -271,8 +276,8 @@
     },
     "heatmap": {
       "title": "Habit activity",
-      "description": "Each square is a day: the darker, the more habits you did.",
-      "descriptionClickable": "Each square is a day: the darker, the more habits you did. Click a day to open it.",
+      "description": "Each square is a day: the stronger the color, the more habits you did.",
+      "descriptionClickable": "Each square is a day: the stronger the color, the more habits you did. Click a day to open it.",
       "filterLabel": "Show habit",
       "allHabits": "All habits",
       "gridLabel": "Habit activity, last 12 months",
@@ -304,6 +309,63 @@
     },
     "doneHabits": "✓ {habits}"
   },
+  "settings": {
+    "title": "Profile settings",
+    "intro": "Set up your profile and make Moodify your own.",
+    "backToDashboard": "Back to dashboard",
+    "profile": {
+      "title": "Profile",
+      "description": "How Moodify addresses you. Only you see your name.",
+      "nameLabel": "Name",
+      "hint": "Shown in the greeting and the menu. Leave it empty to use your account's name ({accountName}).",
+      "hintNoAccountName": "Shown in the greeting and the menu. Leave it empty to be greeted without a name.",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Saved"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "description": "How your dashboard looks on this device. The start page always keeps its light sage look.",
+      "theme": "Theme",
+      "themes": {
+        "sage": {
+          "label": "Sage",
+          "hint": "Calm green"
+        },
+        "ocean": {
+          "label": "Ocean",
+          "hint": "Cool blue"
+        },
+        "dusk": {
+          "label": "Dusk",
+          "hint": "Soft violet"
+        },
+        "clay": {
+          "label": "Clay",
+          "hint": "Warm terracotta"
+        }
+      },
+      "colorMode": "Color mode",
+      "modes": {
+        "light": {
+          "label": "Light",
+          "hint": "Always light"
+        },
+        "dark": {
+          "label": "Dark",
+          "hint": "Always dark"
+        },
+        "system": {
+          "label": "System",
+          "hint": "Follows your device's setting"
+        }
+      }
+    },
+    "language": {
+      "title": "Language",
+      "description": "Texts, dates and numbers in Moodify follow this language. It's also used on the start page."
+    }
+  },
   "errors": {
     "localModeOnly": "Demo data is only available in local mode",
     "invalidToday": "Invalid date for today",
@@ -322,6 +384,10 @@
     "addHabitFailed": "Could not add the habit. Please try again.",
     "removeHabitFailed": "Could not remove the habit. Please try again.",
     "loadDemoFailed": "Could not load the demo data. Please try again.",
+    "displayNameNotText": "The name must be text",
+    "displayNameInvalid": "The name contains characters that aren't allowed",
+    "displayNameTooLong": "Your name can be at most {maxNameLength, plural, one {# character} other {# characters}}",
+    "saveNameFailed": "Could not save your name. Please try again.",
     "unknown": "Something went wrong. Please try again."
   },
   "moodLabels": {

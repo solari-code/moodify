@@ -4,7 +4,7 @@ import * as SheetPrimitive from "@radix-ui/react-dialog"
 import { cva } from "class-variance-authority";
 import { X } from "lucide-react"
 
-import { cn } from "@/lib/utils"
+import { cn, keepFocusInOpenedDialog } from "@/lib/utils"
 import { useTranslations } from "@/i18n/client"
 
 const Sheet = SheetPrimitive.Root
@@ -48,7 +48,9 @@ const sheetVariants = cva(
 // initialFocus: CSS selector of the element to focus when the sheet opens.
 // Without it Radix focuses the first button and skips links on purpose.
 // (A string, so server components can set it.)
-const SheetContent = React.forwardRef(({ side = "right", className, children, initialFocus, onOpenAutoFocus, ...props }, ref) => {
+// On close, focus returns to the trigger, unless a dialog opened from the
+// sheet has it (see keepFocusInOpenedDialog).
+const SheetContent = React.forwardRef(({ side = "right", className, children, initialFocus, onOpenAutoFocus, onCloseAutoFocus, ...props }, ref) => {
   const t = useTranslations("common")
 
   return (
@@ -64,6 +66,10 @@ const SheetContent = React.forwardRef(({ side = "right", className, children, in
           event.preventDefault()
           target.focus()
         }
+      }}
+      onCloseAutoFocus={(event) => {
+        onCloseAutoFocus?.(event)
+        keepFocusInOpenedDialog(event)
       }}
       {...props}>
       {children}

@@ -14,13 +14,15 @@ const ALL = "__all__" // Select value for "All habits" (Radix needs a non-empty 
 
 // Cell colors. No entry and "logged, nothing done" are different on purpose:
 // the first is an unknown day, the second a day the user checked in.
+// The levels are solid theme colors (heatmap-1 … heatmap-4 in globals.css),
+// each at least 3:1 against the card and clearly apart from the next.
 const NO_ENTRY_CLASS = "bg-muted"
 const LEVEL_CLASSES = [
-    "bg-muted ring-1 ring-inset ring-primary/35", // 0: logged, no habit done
-    "bg-primary/25",
-    "bg-primary/45",
-    "bg-primary/70",
-    "bg-primary",
+    "bg-muted ring-1 ring-inset ring-heatmap-0", // 0: logged, no habit done
+    "bg-heatmap-1",
+    "bg-heatmap-2",
+    "bg-heatmap-3",
+    "bg-heatmap-4",
 ]
 
 // One row per weekday (weeks start on Monday). Only every other row is

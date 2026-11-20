@@ -13,6 +13,10 @@ import { cn } from "@/lib/utils"
 import { useFormatter, useTranslations } from "@/i18n/client"
 import { errorMessage } from "@/i18n/errors"
 
+// id of the check-in card: the dashboard scrolls to it (from the charts) and
+// focuses it after "Keep editing" (see LeaveGuard)
+export const CHECK_IN_ID = "check-in"
+
 function sameHabits(a, b) {
     return a.length === b.length && a.every((name) => b.includes(name))
 }
@@ -142,7 +146,12 @@ export default function DayTracker({
     )
 
     return (
-        <Card id="check-in" className="scroll-mt-24 lg:col-span-2">
+        // tabIndex -1: can get focus from code, but is no extra tab stop
+        <Card
+            id={CHECK_IN_ID}
+            tabIndex={-1}
+            className="scroll-mt-24 outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 lg:col-span-2"
+        >
             <CardHeader className="flex-row items-start justify-between gap-4 space-y-0 px-4 sm:px-6">
                 <div className="space-y-1.5">
                     <CardTitle as="h2" className="text-2xl">{t(isToday ? "checkIn.titleToday" : "checkIn.title")}</CardTitle>

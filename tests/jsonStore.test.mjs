@@ -196,3 +196,41 @@ describe("replaceUserData (demo data)", () => {
         assert.equal((await store.getEntry(BOB, "2024-05-09")).mood, 3)
     })
 })
+
+describe("profile", () => {
+    test("a new user has no name of their own", async () => {
+        assert.deepEqual(await store.getProfile(ALICE), { displayName: null })
+    })
+
+    test("saves the name and reads it back, per user", async () => {
+        assert.deepEqual(await store.setDisplayName(ALICE, "Ada"), { displayName: "Ada" })
+        assert.deepEqual(await store.getProfile(ALICE), { displayName: "Ada" })
+        assert.deepEqual(await store.getProfile(BOB), { displayName: null })
+    })
+
+    test("saving again replaces the name; null removes it", async () => {
+        await store.setDisplayName(ALICE, "Ada")
+        await store.setDisplayName(ALICE, "Ada L.")
+        assert.deepEqual(await store.getProfile(ALICE), { displayName: "Ada L." })
+        await store.setDisplayName(ALICE, null)
+        assert.deepEqual(await store.getProfile(ALICE), { displayName: null })
+        const data = JSON.parse(await readFile(file, "utf8"))
+        assert.equal(data.users[ALICE].profile, undefined)
+    })
+
+    test("the name stays when habits and entries change or demo data replaces them", async () => {
+        await store.setDisplayName(ALICE, "Ada")
+        await store.addHabit(ALICE, { name: "Read" })
+        await store.saveEntry(ALICE, { date: "2024-05-10", mood: 7, habits: ["Read"] })
+        await store.replaceUserData(ALICE, { habits: [{ name: "Walk" }], entries: [] })
+        assert.deepEqual(await store.getProfile(ALICE), { displayName: "Ada" })
+    })
+
+    test("saving the name keeps the user's habits and entries", async () => {
+        await store.addHabit(ALICE, { name: "Read" })
+        await store.saveEntry(ALICE, { date: "2024-05-10", mood: 7, habits: ["Read"] })
+        await store.setDisplayName(ALICE, "Ada")
+        assert.deepEqual(await store.getHabits(ALICE), [{ name: "Read" }])
+        assert.equal((await store.getEntries(ALICE)).length, 1)
+    })
+})

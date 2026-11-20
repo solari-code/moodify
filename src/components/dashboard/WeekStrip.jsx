@@ -113,7 +113,8 @@ function DayButton({ dateKey, entry, selected, isToday, future, onSelect }) {
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : "hover:bg-accent hover:text-accent-foreground",
                 !selected && isToday && "bg-secondary text-secondary-foreground",
-                future && "cursor-not-allowed opacity-40 hover:bg-transparent"
+                // dimmed, but still readable (3:1, see tests/contrast.test.mjs)
+                future && "cursor-not-allowed text-muted-foreground opacity-75 hover:bg-transparent hover:text-muted-foreground"
             )}
         >
             <span className={cn(

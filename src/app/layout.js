@@ -2,9 +2,14 @@ import "./globals.css";
 
 import Nav from "@/components/nav/Nav";
 import Footer from "@/components/nav/Footer";
+import { LeaveGuardProvider } from "@/components/LeaveGuard";
 import { I18nProvider } from "@/i18n/client";
 import { getLocale, getMessages, getTranslations } from "@/i18n/server";
+import { appearanceScript } from "@/lib/appearance";
 import { fontHeading, fontSans } from "./fonts";
+
+// Applies the dashboard's theme and color mode before the first paint (see src/lib/appearance.js).
+const APPEARANCE_SCRIPT = appearanceScript();
 
 export async function generateMetadata() {
   const t = await getTranslations("metadata.default");
@@ -22,14 +27,23 @@ export default async function RootLayout({ children }) {
   const messages = await getMessages(locale);
 
   return (
-    <html lang={locale}>
+    // suppressHydrationWarning: the appearance script may set data-theme and
+    // the `dark` class on <html> before React hydrates (this affects <html>'s
+    // own attributes only)
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: APPEARANCE_SCRIPT }} />
+      </head>
       <body
         className={`${fontSans.variable} ${fontHeading.variable} font-sans antialiased`}
       >
         <I18nProvider locale={locale} messages={messages}>
-          <Nav />
-          <main>{children}</main>
-          <Footer />
+          {/* asks before links or signing out would drop unsaved changes */}
+          <LeaveGuardProvider>
+            <Nav />
+            <main>{children}</main>
+            <Footer />
+          </LeaveGuardProvider>
         </I18nProvider>
       </body>
     </html>

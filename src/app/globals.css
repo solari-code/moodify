@@ -10,13 +10,31 @@
  * - lavender / peach: soft accents for highlights and illustrations
  * - mood-0 … mood-10: the mood scale, from muted blue/lavender (low)
  *   over warm sand (neutral) to sage (high). No red: a low day isn't a failure.
+ * - heatmap-1 … heatmap-4: the habit heatmap's levels (more habits: stronger),
+ *   heatmap-0 the outline of "logged, no habits done"
+ * - mood-line: the chart's daily mood line; control: the border of checkboxes
+ *   and text fields (their only visible shape)
+ *
+ * Contrast (WCAG AA) is checked by tests/contrast.test.mjs for every palette:
+ * text 4.5:1; mood colors, chart lines, heatmap levels, focus ring and
+ * control borders 3:1 against the surfaces they are shown on.
  *
  * Colors are HSL channels (shadcn/ui convention), used as hsl(var(--token))
  * or hsl(var(--token) / alpha). Tailwind names are in tailwind.config.js.
- * The .dark palette is defined, there is no toggle yet.
+ *
+ * Sage: :root is the light palette, .dark the dark one. The landing page is
+ * always light sage. In the dashboard, the user picks a theme (sage, ocean,
+ * dusk, clay; the others are further down) and light, dark or the device's
+ * setting in the profile settings; data-theme and `dark` are set on <html>
+ * (src/lib/appearance.js).
  */
 @layer base {
-  :root {
+  /* Sage (the default theme, and the landing page's look) */
+  :root,
+  [data-theme="sage"] {
+    /* native parts (scrollbars, form controls) follow the palette */
+    color-scheme: light;
+
     --background: 40 33% 97%;
     --foreground: 160 22% 14%;
     --card: 40 50% 99%;
@@ -55,20 +73,34 @@
     --chart-4: 195 35% 50%;
     --chart-5: 42 65% 55%;
 
+    /* at least 3:1 on every surface, so dots and bars stay visible */
     --mood-0: 215 38% 42%;
     --mood-1: 228 32% 56%;
-    --mood-2: 250 32% 66%;
-    --mood-3: 272 34% 75%;
-    --mood-4: 300 18% 64%;
-    --mood-5: 35 28% 63%;
-    --mood-6: 42 55% 58%;
-    --mood-7: 68 36% 52%;
-    --mood-8: 95 34% 56%;
+    --mood-2: 250 30% 60%;
+    --mood-3: 272 28% 58%;
+    --mood-4: 300 20% 54%;
+    --mood-5: 32 32% 47%;
+    --mood-6: 40 62% 40%;
+    --mood-7: 65 42% 37%;
+    --mood-8: 95 32% 41%;
     --mood-9: 138 30% 43%;
     --mood-10: 165 45% 30%;
+    --mood-line: 160 8% 53%;
+
+    /* sage, darker = more habits; each level clearly apart from the next */
+    --heatmap-0: 152 14% 50%;
+    --heatmap-1: 152 30% 47%;
+    --heatmap-2: 152 30% 38%;
+    --heatmap-3: 152 30% 31%;
+    --heatmap-4: 152 30% 23%;
+
+    --control: 40 10% 50%;
   }
 
-  .dark {
+  .dark,
+  .dark [data-theme="sage"] {
+    color-scheme: dark;
+
     --background: 165 20% 8%;
     --foreground: 40 25% 92%;
     --card: 165 16% 11%;
@@ -105,7 +137,7 @@
     --chart-4: 195 45% 60%;
     --chart-5: 42 70% 62%;
 
-    --mood-0: 215 40% 52%;
+    --mood-0: 215 42% 55%;
     --mood-1: 228 36% 64%;
     --mood-2: 250 36% 73%;
     --mood-3: 272 40% 81%;
@@ -116,6 +148,205 @@
     --mood-8: 95 36% 64%;
     --mood-9: 138 32% 52%;
     --mood-10: 165 48% 40%;
+    --mood-line: 150 8% 46%;
+
+    /* sage, lighter = more habits */
+    --heatmap-0: 150 12% 45%;
+    --heatmap-1: 150 34% 36%;
+    --heatmap-2: 150 34% 44%;
+    --heatmap-3: 150 34% 54%;
+    --heatmap-4: 150 34% 71%;
+
+    --control: 160 10% 50%;
+  }
+
+  /*
+   * More themes for the dashboard (chosen in the profile settings). Each
+   * sets its own surfaces, text, primary color, heatmap and chart line, in a
+   * light and a dark palette; the mood colors and the lavender/peach accents
+   * are shared with sage. Every theme's dark palette must set all colors its
+   * light one sets (checked by tests/contrast.test.mjs).
+   *
+   * The selectors work on any element, not only <html>: the theme previews in
+   * the settings carry data-theme="<theme>" to show that theme's colors (in
+   * the current mode, via ".dark [data-theme=…]").
+   */
+  /* Ocean: calm blue and teal */
+  [data-theme="ocean"] {
+    --background: 204 33% 97%;
+    --foreground: 210 35% 14%;
+    --card: 200 50% 99%;
+    --card-foreground: 210 35% 14%;
+    --popover: 200 50% 99%;
+    --popover-foreground: 210 35% 14%;
+    --primary: 200 62% 32%;
+    --primary-foreground: 200 50% 98%;
+    --secondary: 200 40% 92%;
+    --secondary-foreground: 205 50% 22%;
+    --muted: 205 25% 93%;
+    --muted-foreground: 210 12% 38%;
+    --accent: 195 35% 92%;
+    --accent-foreground: 205 50% 20%;
+    --border: 205 22% 87%;
+    --input: 205 18% 82%;
+    --ring: 200 62% 32%;
+    --shadow: 210 40% 12%;
+    --mood-line: 210 8% 53%;
+    --control: 205 12% 50%;
+    --heatmap-0: 200 14% 49.5%;
+    --heatmap-1: 200 45% 50.5%;
+    --heatmap-2: 200 45% 41.5%;
+    --heatmap-3: 200 45% 33%;
+    --heatmap-4: 200 45% 25%;
+  }
+
+  .dark[data-theme="ocean"],
+  .dark [data-theme="ocean"] {
+    --background: 210 32% 8%;
+    --foreground: 200 25% 92%;
+    --card: 210 28% 11%;
+    --card-foreground: 200 25% 92%;
+    --popover: 210 28% 11%;
+    --popover-foreground: 200 25% 92%;
+    --primary: 195 55% 58%;
+    --primary-foreground: 210 40% 9%;
+    --secondary: 205 25% 18%;
+    --secondary-foreground: 200 25% 92%;
+    --muted: 208 22% 16%;
+    --muted-foreground: 200 10% 65%;
+    --accent: 205 24% 19%;
+    --accent-foreground: 200 25% 92%;
+    --border: 208 20% 19%;
+    --input: 208 20% 22%;
+    --ring: 195 55% 58%;
+    --shadow: 0 0% 0%;
+    --mood-line: 200 8% 48%;
+    --control: 205 12% 50%;
+    --heatmap-0: 195 14% 45.5%;
+    --heatmap-1: 195 45% 37.5%;
+    --heatmap-2: 195 45% 45.5%;
+    --heatmap-3: 195 45% 57%;
+    --heatmap-4: 195 45% 71.5%;
+  }
+
+  /* Dusk: soft violet */
+  [data-theme="dusk"] {
+    --background: 262 30% 97%;
+    --foreground: 262 25% 16%;
+    --card: 260 45% 99%;
+    --card-foreground: 262 25% 16%;
+    --popover: 260 45% 99%;
+    --popover-foreground: 262 25% 16%;
+    --primary: 262 32% 45%;
+    --primary-foreground: 260 50% 98%;
+    --secondary: 262 35% 93%;
+    --secondary-foreground: 262 30% 28%;
+    --muted: 262 20% 93%;
+    --muted-foreground: 262 10% 40%;
+    --accent: 262 30% 93%;
+    --accent-foreground: 262 30% 25%;
+    --border: 262 18% 88%;
+    --input: 262 15% 83%;
+    --ring: 262 32% 45%;
+    --shadow: 262 30% 15%;
+    --mood-line: 262 6% 53%;
+    --control: 262 8% 50%;
+    --heatmap-0: 262 14% 54.5%;
+    --heatmap-1: 262 30% 62%;
+    --heatmap-2: 262 30% 53.5%;
+    --heatmap-3: 262 30% 44%;
+    --heatmap-4: 262 30% 33%;
+  }
+
+  .dark[data-theme="dusk"],
+  .dark [data-theme="dusk"] {
+    --background: 260 22% 9%;
+    --foreground: 262 25% 92%;
+    --card: 260 20% 12%;
+    --card-foreground: 262 25% 92%;
+    --popover: 260 20% 12%;
+    --popover-foreground: 262 25% 92%;
+    --primary: 262 50% 74%;
+    --primary-foreground: 262 30% 12%;
+    --secondary: 262 18% 20%;
+    --secondary-foreground: 262 25% 92%;
+    --muted: 262 15% 17%;
+    --muted-foreground: 262 10% 66%;
+    --accent: 262 16% 20%;
+    --accent-foreground: 262 25% 92%;
+    --border: 262 14% 20%;
+    --input: 262 14% 23%;
+    --ring: 262 50% 74%;
+    --shadow: 0 0% 0%;
+    --mood-line: 262 6% 48%;
+    --control: 262 8% 50%;
+    --heatmap-0: 262 14% 51%;
+    --heatmap-1: 262 40% 54%;
+    --heatmap-2: 262 40% 61.5%;
+    --heatmap-3: 262 40% 70.5%;
+    --heatmap-4: 262 40% 80%;
+  }
+
+  /* Clay: warm terracotta (errors in crimson, so they don't look like the primary color) */
+  [data-theme="clay"] {
+    --background: 30 38% 96%;
+    --foreground: 18 30% 15%;
+    --card: 30 50% 99%;
+    --card-foreground: 18 30% 15%;
+    --popover: 30 50% 99%;
+    --popover-foreground: 18 30% 15%;
+    --primary: 16 52% 40%;
+    --primary-foreground: 30 50% 98%;
+    --secondary: 22 45% 92%;
+    --secondary-foreground: 16 45% 25%;
+    --muted: 28 28% 92%;
+    --muted-foreground: 20 12% 37%;
+    --accent: 24 38% 92%;
+    --accent-foreground: 16 45% 22%;
+    --destructive: 350 60% 42%;
+    --destructive-foreground: 30 50% 98%;
+    --border: 28 22% 86%;
+    --input: 28 18% 82%;
+    --ring: 16 52% 40%;
+    --shadow: 18 35% 14%;
+    --mood-line: 20 6% 52%;
+    --control: 25 10% 50%;
+    --heatmap-0: 16 14% 51%;
+    --heatmap-1: 16 45% 56.5%;
+    --heatmap-2: 16 45% 46.5%;
+    --heatmap-3: 16 45% 37.5%;
+    --heatmap-4: 16 45% 28%;
+  }
+
+  .dark[data-theme="clay"],
+  .dark [data-theme="clay"] {
+    --background: 20 18% 8%;
+    --foreground: 30 30% 92%;
+    --card: 20 16% 11%;
+    --card-foreground: 30 30% 92%;
+    --popover: 20 16% 11%;
+    --popover-foreground: 30 30% 92%;
+    --primary: 18 62% 64%;
+    --primary-foreground: 18 40% 10%;
+    --secondary: 18 20% 18%;
+    --secondary-foreground: 30 30% 92%;
+    --muted: 20 14% 16%;
+    --muted-foreground: 25 10% 66%;
+    --accent: 20 16% 19%;
+    --accent-foreground: 30 30% 92%;
+    --destructive: 350 70% 66%;
+    --destructive-foreground: 20 25% 8%;
+    --border: 20 14% 19%;
+    --input: 20 14% 22%;
+    --ring: 18 62% 64%;
+    --shadow: 0 0% 0%;
+    --mood-line: 20 6% 48%;
+    --control: 20 10% 50%;
+    --heatmap-0: 18 14% 48%;
+    --heatmap-1: 18 50% 43.5%;
+    --heatmap-2: 18 50% 53%;
+    --heatmap-3: 18 50% 64%;
+    --heatmap-4: 18 50% 76.5%;
   }
 }
 
@@ -137,6 +368,16 @@
 
   ::selection {
     background-color: hsl(var(--primary) / 0.2);
+  }
+}
+
+@layer utilities {
+  /* Hover of filled buttons (hover:bg-tint): a thin layer of the text color
+     on top. The button gets a bit darker in light mode and lighter in dark
+     mode, so the contrast of its label goes up (a faded button would drop
+     below 4.5:1). */
+  .bg-tint {
+    background-image: linear-gradient(hsl(var(--foreground) / 0.08), hsl(var(--foreground) / 0.08));
   }
 }
 

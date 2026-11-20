@@ -10,6 +10,9 @@
     },
     "dashboard": {
       "title": "Panel"
+    },
+    "settings": {
+      "title": "Configuración del perfil"
     }
   },
   "common": {
@@ -30,6 +33,7 @@
     "openMenu": "Abrir el menú de navegación",
     "menuDescription": "Navegación y cuenta",
     "openUserMenu": "Abrir el menú de usuario",
+    "settings": "Configuración del perfil",
     "signOut": "Cerrar sesión"
   },
   "signIn": {
@@ -189,6 +193,7 @@
     "unsaved": {
       "title": "¿Descartar los cambios sin guardar?",
       "description": "Tu registro del {day} aún no está guardado. Si cambias de día ahora, se perderán estos cambios.",
+      "descriptionLeave": "Tu registro del {day} aún no está guardado. Si sales de esta página ahora, se perderán estos cambios.",
       "discard": "Descartar cambios",
       "keep": "Seguir editando"
     },
@@ -271,8 +276,8 @@
     },
     "heatmap": {
       "title": "Actividad de hábitos",
-      "description": "Cada cuadrado es un día: cuanto más oscuro, más hábitos cumpliste.",
-      "descriptionClickable": "Cada cuadrado es un día: cuanto más oscuro, más hábitos cumpliste. Haz clic en un día para abrirlo.",
+      "description": "Cada cuadrado es un día: cuanto más intenso el color, más hábitos cumpliste.",
+      "descriptionClickable": "Cada cuadrado es un día: cuanto más intenso el color, más hábitos cumpliste. Haz clic en un día para abrirlo.",
       "filterLabel": "Mostrar hábito",
       "allHabits": "Todos los hábitos",
       "gridLabel": "Actividad de hábitos, últimos 12 meses",
@@ -304,6 +309,63 @@
     },
     "doneHabits": "✓ {habits}"
   },
+  "settings": {
+    "title": "Configuración del perfil",
+    "intro": "Configura tu perfil y haz que Moodify se adapte a ti.",
+    "backToDashboard": "Volver al panel",
+    "profile": {
+      "title": "Perfil",
+      "description": "Cómo te llama Moodify. Solo tú ves tu nombre.",
+      "nameLabel": "Nombre",
+      "hint": "Aparece en el saludo y en el menú. Déjalo vacío para usar el nombre de tu cuenta ({accountName}).",
+      "hintNoAccountName": "Aparece en el saludo y en el menú. Déjalo vacío para que te salude sin nombre.",
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "saved": "Guardado"
+    },
+    "appearance": {
+      "title": "Apariencia",
+      "description": "Cómo se ve tu panel en este dispositivo. La página de inicio siempre mantiene su aspecto claro en verde salvia.",
+      "theme": "Tema",
+      "themes": {
+        "sage": {
+          "label": "Salvia",
+          "hint": "Verde tranquilo"
+        },
+        "ocean": {
+          "label": "Océano",
+          "hint": "Azul sereno"
+        },
+        "dusk": {
+          "label": "Crepúsculo",
+          "hint": "Violeta suave"
+        },
+        "clay": {
+          "label": "Arcilla",
+          "hint": "Terracota cálida"
+        }
+      },
+      "colorMode": "Modo de color",
+      "modes": {
+        "light": {
+          "label": "Claro",
+          "hint": "Siempre claro"
+        },
+        "dark": {
+          "label": "Oscuro",
+          "hint": "Siempre oscuro"
+        },
+        "system": {
+          "label": "Sistema",
+          "hint": "Sigue el ajuste de tu dispositivo"
+        }
+      }
+    },
+    "language": {
+      "title": "Idioma",
+      "description": "Los textos, las fechas y los números de Moodify siguen este idioma. También se usa en la página de inicio."
+    }
+  },
   "errors": {
     "localModeOnly": "Los datos de ejemplo solo están disponibles en modo local",
     "invalidToday": "La fecha de hoy no es válida",
@@ -322,6 +384,10 @@
     "addHabitFailed": "No se pudo añadir el hábito. Inténtalo de nuevo.",
     "removeHabitFailed": "No se pudo quitar el hábito. Inténtalo de nuevo.",
     "loadDemoFailed": "No se pudieron cargar los datos de ejemplo. Inténtalo de nuevo.",
+    "displayNameNotText": "El nombre debe ser un texto",
+    "displayNameInvalid": "El nombre contiene caracteres no permitidos",
+    "displayNameTooLong": "Tu nombre puede tener como máximo {maxNameLength, plural, one {# carácter} other {# caracteres}}",
+    "saveNameFailed": "No se pudo guardar tu nombre. Inténtalo de nuevo.",
     "unknown": "Algo salió mal. Inténtalo de nuevo."
   },
   "moodLabels": {

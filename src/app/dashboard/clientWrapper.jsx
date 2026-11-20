@@ -1,15 +1,16 @@
 "use client"
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import DashboardHeader from "@/components/dashboard/DashboardHeader"
 import WeekStrip from "@/components/dashboard/WeekStrip"
-import DayTracker from '@/components/dashboard/DayTracker'
+import DayTracker, { CHECK_IN_ID } from '@/components/dashboard/DayTracker'
 import Overview from '@/components/dashboard/Overview'
 import MoodChart from '@/components/dashboard/MoodChart'
 import HabitHeatmap from '@/components/dashboard/HabitHeatmap'
 import DemoDataBar from '@/components/dashboard/DemoDataBar'
 import UnsavedChangesDialog from '@/components/dashboard/UnsavedChangesDialog'
+import { useUnsavedChanges } from '@/components/LeaveGuard'
 
 import { saveEntry, deleteEntry } from "@/app/actions/entries"
 import { addHabit, removeHabit } from "@/app/actions/habits"
@@ -90,39 +91,32 @@ export default function ClientWrapper({ habits: initialHabits, entries: initialE
         return result
     }
 
-    // The check-in has unsaved changes: switching days asks first
-    // (pendingKey = the day the user wanted to go to), and the browser warns
-    // before reloading or closing the tab.
-    const [trackerDirty, setTrackerDirty] = useState(false);
-    const [pendingKey, setPendingKey] = useState(null);
-
-    useEffect(() => {
-        if (!trackerDirty) return
-        function warn(event) {
-            event.preventDefault();
-            event.returnValue = ""; // older browsers need this to show the prompt
-        }
-        window.addEventListener("beforeunload", warn);
-        return () => window.removeEventListener("beforeunload", warn);
-    }, [trackerDirty]);
-
-    // current streak per habit, for the habit rows of the check-in
-    const streaks = useMemo(() => Object.fromEntries(
-        habitStreaks(entries, habits, toDateKey(today)).map(({ name, streak }) => [name, streak])
-    ), [entries, habits, today]);
-
-    if (!isClient) return <DashboardPlaceholder />
-
     const todayKey = toDateKey(today);
     const dateKey = selectedKey ?? todayKey;
     const isToday = dateKey === todayKey;
     const dayLabel = format.date(fromDateKey(dateKey), FULL_DATE);
 
+    // The check-in has unsaved changes: switching days asks first
+    // (pendingDay = { key: the day the user wanted to go to, opener: the
+    // element that asked, for the focus }). Leaving the dashboard (links,
+    // signing out, reloading or closing the tab) asks too, see
+    // src/components/LeaveGuard.jsx.
+    const [trackerDirty, setTrackerDirty] = useState(false);
+    const [pendingDay, setPendingDay] = useState(null);
+    useUnsavedChanges(trackerDirty, { dayLabel, focusId: CHECK_IN_ID });
+
+    // current streak per habit, for the habit rows of the check-in
+    const streaks = useMemo(() => Object.fromEntries(
+        habitStreaks(entries, habits, todayKey).map(({ name, streak }) => [name, streak])
+    ), [entries, habits, todayKey]);
+
+    if (!isClient) return <DashboardPlaceholder />
+
     // All day changes (week strip, calendar, "Back to today") go through here.
     function selectDay(key) {
         if (key === dateKey) return
         if (trackerDirty) {
-            setPendingKey(key);
+            setPendingDay({ key, opener: document.activeElement });
             return
         }
         setSelectedKey(key);
@@ -133,13 +127,13 @@ export default function ClientWrapper({ habits: initialHabits, entries: initialE
         selectDay(key);
         if (!trackerDirty) {
             const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-            document.getElementById("check-in")?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+            document.getElementById(CHECK_IN_ID)?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
         }
     }
 
     function discardAndSwitch() {
-        setSelectedKey(pendingKey);
-        setPendingKey(null);
+        setSelectedKey(pendingDay.key);
+        setPendingDay(null);
     }
 
     return (
@@ -187,10 +181,12 @@ export default function ClientWrapper({ habits: initialHabits, entries: initialE
             />
 
             <UnsavedChangesDialog
-                open={pendingKey !== null}
+                open={pendingDay !== null}
                 dayLabel={dayLabel}
-                onKeep={() => setPendingKey(null)}
+                onKeep={() => setPendingDay(null)}
                 onDiscard={discardAndSwitch}
+                opener={pendingDay?.opener}
+                fallbackFocusId={CHECK_IN_ID}
             />
         </div>
     )

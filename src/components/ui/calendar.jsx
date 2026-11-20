@@ -27,11 +27,11 @@ function Calendar({
         nav: "absolute inset-x-0 top-0 z-10 flex items-center justify-between",
         button_previous: cn(
           buttonVariants({ variant: "outline" }),
-          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+          "h-7 w-7 bg-transparent p-0 text-muted-foreground hover:text-foreground"
         ),
         button_next: cn(
           buttonVariants({ variant: "outline" }),
-          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+          "h-7 w-7 bg-transparent p-0 text-muted-foreground hover:text-foreground"
         ),
         month_grid: "w-full border-collapse space-y-1",
         weekdays: "flex",
@@ -51,8 +51,9 @@ function Calendar({
           "rounded-full [&>button]:bg-primary [&>button]:text-primary-foreground [&>button]:hover:bg-primary [&>button]:hover:text-primary-foreground [&>button]:focus:bg-primary [&>button]:focus:text-primary-foreground",
         today: "rounded-full bg-accent font-semibold text-accent-foreground",
         outside:
-          "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
-        disabled: "text-muted-foreground opacity-50",
+          "day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground",
+        // muted instead of faded, so future days stay readable
+        disabled: "text-muted-foreground",
         range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         hidden: "invisible",

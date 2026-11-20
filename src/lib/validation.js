@@ -12,6 +12,7 @@ export const MOOD_MIN = 0
 export const MOOD_MAX = 10
 export const HABIT_NAME_MAX_LENGTH = 100
 export const HABITS_PER_ENTRY_MAX = 100
+export const DISPLAY_NAME_MAX_LENGTH = 50
 
 // The limits as values for the error messages, e.g. "at most {maxLength} characters".
 export const LIMITS = {
@@ -19,6 +20,7 @@ export const LIMITS = {
     moodMax: MOOD_MAX,
     maxLength: HABIT_NAME_MAX_LENGTH,
     maxHabits: HABITS_PER_ENTRY_MAX,
+    maxNameLength: DISPLAY_NAME_MAX_LENGTH,
 }
 
 // Returns { name } (trimmed), or { error: code } if it isn't usable.
@@ -27,6 +29,20 @@ export function normalizeHabitName(value) {
     const name = value.trim()
     if (!name) return { error: "habitNameRequired" }
     if (name.length > HABIT_NAME_MAX_LENGTH) return { error: "habitNameTooLong" }
+    return { name }
+}
+
+// The name the user wants to be called in the app (profile settings).
+// Returns { name } (trimmed, whitespace such as line breaks collapsed to
+// single spaces), { name: null } for an empty value (= use the account's
+// name again), or { error: code }.
+export function normalizeDisplayName(value) {
+    if (typeof value !== "string") return { error: "displayNameNotText" }
+    // other control characters (not whitespace) have no place in a name
+    if (/[\u0000-\u0008\u000E-\u001F\u007F-\u009F]/.test(value)) return { error: "displayNameInvalid" }
+    const name = value.replace(/\s+/g, " ").trim()
+    if (!name) return { name: null }
+    if (name.length > DISPLAY_NAME_MAX_LENGTH) return { error: "displayNameTooLong" }
     return { name }
 }
 

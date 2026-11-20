@@ -26,7 +26,7 @@ export default function HabitRow({ name, done, streak, onToggle }) {
                 aria-hidden="true"
                 className={cn(
                     "flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-                    done ? "border-primary bg-primary text-primary-foreground" : "border-input"
+                    done ? "border-primary bg-primary text-primary-foreground" : "border-control"
                 )}
             >
                 <Check className={cn("h-3.5 w-3.5 transition-transform", done ? "scale-100" : "scale-0")} strokeWidth={3} />

@@ -3,11 +3,14 @@ import { getMongoClient } from "@/lib/mongodb"
 
 // Normal-mode storage in MongoDB.
 //
-// habits:  { userId: ObjectId, habits: [{ name }], createdAt, updatedAt }  (existing layout)
-// entries: { userId: ObjectId, date: "YYYY-MM-DD", mood, habits: [names], createdAt, updatedAt }
+// habits:   { userId: ObjectId, habits: [{ name }], createdAt, updatedAt }  (existing layout)
+// entries:  { userId: ObjectId, date: "YYYY-MM-DD", mood, habits: [names], createdAt, updatedAt }
+// profiles: { userId: ObjectId, displayName, createdAt, updatedAt }  (one per user, only once
+//           the user has set a name; the account's name stays in Auth.js' `users`)
 //
 // A unique index on { userId, date } makes sure there is only one entry per
-// user and day, even if two saves for the same day arrive at the same time.
+// user and day, even if two saves for the same day arrive at the same time
+// (profiles: a unique index on userId).
 
 const DUPLICATE_KEY_ERROR = 11000
 
@@ -28,6 +31,17 @@ function ensureEntryIndexes(db) {
     return globalThis._moodifyEntryIndexes
 }
 
+// Same for the profiles: a unique index on userId (one profile per user).
+function ensureProfileIndexes(db) {
+    globalThis._moodifyProfileIndexes ??= db.collection("profiles")
+        .createIndex({ userId: 1 }, { unique: true, name: "userId_unique" })
+        .catch((error) => {
+            globalThis._moodifyProfileIndexes = undefined
+            console.error("Moodify: could not create the unique index on profiles { userId }:", error)
+        })
+    return globalThis._moodifyProfileIndexes
+}
+
 // Plain data for callers (no ObjectId / Date objects).
 function toEntry(doc) {
     return {
@@ -40,6 +54,29 @@ function toEntry(doc) {
 }
 
 export const mongoStore = {
+    // The user's profile: { displayName } (null: use the account's name).
+    async getProfile(userId) {
+        const db = getDb()
+        const doc = await db.collection("profiles").findOne({ userId: new ObjectId(userId) })
+        return { displayName: doc?.displayName ?? null }
+    },
+
+    // Saves the name the user wants to be called; null removes it.
+    // An upsert on userId: at most one profile per user.
+    async setDisplayName(userId, displayName) {
+        const db = getDb()
+        await ensureProfileIndexes(db)
+        const now = new Date()
+        await db.collection("profiles").updateOne(
+            { userId: new ObjectId(userId) },
+            displayName === null
+                ? { $unset: { displayName: "" }, $set: { updatedAt: now } }
+                : { $set: { displayName, updatedAt: now }, $setOnInsert: { createdAt: now } },
+            { upsert: displayName !== null }
+        )
+        return { displayName }
+    },
+
     async getHabits(userId) {
         const db = getDb()
         const doc = await db.collection("habits").findOne({ userId: new ObjectId(userId) })

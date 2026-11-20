@@ -8,6 +8,7 @@ import path from "node:path"
 //   "version": 1,
 //   "users": {
 //     "<userId>": {
+//       "profile": { "displayName": "Ada", "updatedAt": "..." },
 //       "habits": [{ "name": "Read" }],
 //       "entries": {
 //         "2024-05-10": { "mood": 7, "habits": ["Read"], "createdAt": "...", "updatedAt": "..." }
@@ -47,6 +48,23 @@ export function createJsonStore(filePath = DEFAULT_DATA_FILE) {
     }
 
     return {
+        // The user's profile: { displayName } (null: use the account's name).
+        getProfile(userId) {
+            return readUser(userId, (user) => ({ displayName: user.profile?.displayName ?? null }))
+        },
+
+        // Saves the name the user wants to be called; null removes it.
+        setDisplayName(userId, displayName) {
+            return updateUser(userId, (user) => {
+                if (displayName === null) {
+                    delete user.profile
+                } else {
+                    user.profile = { displayName, updatedAt: new Date().toISOString() }
+                }
+                return { displayName }
+            })
+        },
+
         getHabits(userId) {
             return readUser(userId, (user) => user.habits.map((habit) => ({ name: habit.name })))
         },
@@ -103,7 +121,8 @@ export function createJsonStore(filePath = DEFAULT_DATA_FILE) {
             })
         },
 
-        // Replaces all habits and entries of one user (other users are kept).
+        // Replaces all habits and entries of one user (other users and the
+        // user's profile are kept).
         // Local mode only (demo data); the MongoDB store has no equivalent on purpose.
         replaceUserData(userId, { habits, entries }) {
             return updateUser(userId, (user) => {

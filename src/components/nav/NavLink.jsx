@@ -1,16 +1,17 @@
 "use client"
 
-import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { GuardedLink } from "@/components/LeaveGuard"
 import { cn } from "@/lib/utils"
 
 // Navigation link that highlights itself on its own page (aria-current="page").
+// Asks before leaving a page with unsaved changes (see GuardedLink).
 export default function NavLink({ href, className, children, ...props }) {
     const pathname = usePathname()
     const active = pathname === href
 
     return (
-        <Link
+        <GuardedLink
             href={href}
             aria-current={active ? "page" : undefined}
             className={cn(
@@ -24,6 +25,6 @@ export default function NavLink({ href, className, children, ...props }) {
             {...props}
         >
             {children}
-        </Link>
+        </GuardedLink>
     )
 }

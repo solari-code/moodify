@@ -5,11 +5,13 @@ import UserAvatar from "./UserAvatar"
 import LocalModeBadge from "./LocalModeBadge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Menu, LogOut, LayoutDashboard } from "lucide-react"
+import { Menu, LayoutDashboard, UserCog } from "lucide-react"
 import { Logo } from "@/components/brand/Logo"
 import ButtonSignIn from "./ButtonSignIn"
+import SignOutButton from "./SignOutButton"
 import LanguageSwitcher from "./LanguageSwitcher"
-import { signOutAction } from "@/app/actions/auth"
+import HiddenInDashboard from "./HiddenInDashboard"
+import { DASHBOARD_PATH, SETTINGS_PATH } from "@/lib/routes"
 import { getTranslations } from "@/i18n/server"
 
 
@@ -42,24 +44,28 @@ export default async function MobileNav({ user, localMode = false }) {
                                     {user.email && <p className="truncate text-xs text-muted-foreground">{user.email}</p>}
                                 </div>
                             </div>
-                            <NavLink href="/dashboard" className="px-4 py-2.5">
-                                <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
-                                {t("dashboard")}
-                            </NavLink>
+                            <div className="flex flex-col gap-1">
+                                <NavLink href={DASHBOARD_PATH} className="px-4 py-2.5">
+                                    <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
+                                    {t("dashboard")}
+                                </NavLink>
+                                <NavLink href={SETTINGS_PATH} className="px-4 py-2.5">
+                                    <UserCog className="h-4 w-4" aria-hidden="true" />
+                                    {t("settings")}
+                                </NavLink>
+                            </div>
                             <Separator />
-                            <form action={signOutAction}>
-                                <Button type="submit" variant="outline" className="w-full">
-                                    <LogOut className="mr-2 h-4 w-4" />
-                                    {t("signOut")}
-                                </Button>
-                            </form>
+                            <SignOutButton className="w-full" />
                         </>
                     ) : (
                         <ButtonSignIn compact className="[&>button]:w-full" />
                     )}
                 </nav>
 
-                <LanguageSwitcher variant="block" />
+                {/* in the dashboard, the language is set in the profile settings */}
+                <HiddenInDashboard>
+                    <LanguageSwitcher variant="block" />
+                </HiddenInDashboard>
                 {localMode && <LocalModeBadge className="self-start" />}
             </SheetContent>
         </NavSheet>

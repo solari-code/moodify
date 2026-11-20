@@ -1,12 +1,16 @@
+import { UserCog } from "lucide-react"
 import {
     DropdownMenu,
     DropdownMenuContent,
+    DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import UserAvatar from "./UserAvatar"
 import SignOutMenuItem from "./SignOutMenuItem"
+import { GuardedLink } from "@/components/LeaveGuard"
+import { SETTINGS_PATH } from "@/lib/routes"
 import { getTranslations } from "@/i18n/server"
 
 export default async function UserMenu({ user }) {
@@ -32,6 +36,13 @@ export default async function UserMenu({ user }) {
                     {name && <p className="text-sm font-medium leading-tight">{name}</p>}
                     {email && <p className="text-xs leading-tight text-muted-foreground">{email}</p>}
                 </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                    <GuardedLink href={SETTINGS_PATH}>
+                        <UserCog className="mr-2 h-4 w-4" aria-hidden="true" />
+                        {t("settings")}
+                    </GuardedLink>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <SignOutMenuItem />
             </DropdownMenuContent>

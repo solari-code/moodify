@@ -25,8 +25,9 @@ import { cn } from "@/lib/utils"
 // with `lang`, so screen readers pronounce it correctly. The menu scrolls
 // when there are more languages than fit on the screen.
 //
-// variant: "compact" (small button, desktop navigation) or "block" (labelled,
-//          full-width button, mobile navigation)
+// variant: "compact" (small button, desktop navigation), "block" (labelled,
+//          full-width button, mobile navigation) or "field" (outlined button
+//          without its own label, e.g. in the settings under a "Language" title)
 export default function LanguageSwitcher({ variant = "compact", className }) {
 
     const locale = useLocale()
@@ -36,6 +37,9 @@ export default function LanguageSwitcher({ variant = "compact", className }) {
     const [shownLocale, setShownLocale] = useOptimistic(locale)
     const current = getLanguage(shownLocale)
     const block = variant === "block"
+    const field = variant === "field"
+    // outlined button that opens a menu of its width
+    const wide = block || field
 
     function change(next) {
         if (next === shownLocale) return
@@ -49,11 +53,11 @@ export default function LanguageSwitcher({ variant = "compact", className }) {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button
-                    variant={block ? "outline" : "ghost"}
-                    size={block ? "default" : "sm"}
+                    variant={wide ? "outline" : "ghost"}
+                    size={wide ? "default" : "sm"}
                     aria-busy={pending || undefined}
-                    className={block
-                        ? "w-full justify-start gap-2"
+                    className={wide
+                        ? cn("w-full justify-start gap-2", field && className)
                         : cn("gap-2 text-muted-foreground hover:text-accent-foreground", className)}
                 >
                     <Globe className={cn("h-4 w-4", pending && "animate-pulse")} aria-hidden="true" />
@@ -62,23 +66,23 @@ export default function LanguageSwitcher({ variant = "compact", className }) {
                         hidden: (chunks) => <span className="sr-only">{chunks}</span>,
                         language: <span lang={current.code}>{current.name}</span>,
                     })}
-                    {block && <ChevronDown className="ml-auto h-4 w-4 text-muted-foreground" aria-hidden="true" />}
+                    {wide && <ChevronDown className="ml-auto h-4 w-4 text-muted-foreground" aria-hidden="true" />}
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-                align={block ? "start" : "end"}
+                align={wide ? "start" : "end"}
                 className={cn(
                     "max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] overflow-y-auto",
-                    block ? "w-[var(--radix-dropdown-menu-trigger-width)]" : "min-w-[10rem]"
+                    wide ? "w-[var(--radix-dropdown-menu-trigger-width)]" : "min-w-[10rem]"
                 )}
             >
-                {!block && <>
+                {!wide && <>
                     <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">{t("label")}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                 </>}
                 <DropdownMenuRadioGroup value={shownLocale} onValueChange={change}>
                     {LANGUAGES.map(({ code, name }) => (
-                        <DropdownMenuRadioItem key={code} value={code} lang={code} disabled={pending} className={block ? "py-2.5" : undefined}>
+                        <DropdownMenuRadioItem key={code} value={code} lang={code} disabled={pending} className={wide ? "py-2.5" : undefined}>
                             {name}
                         </DropdownMenuRadioItem>
                     ))}
@@ -87,7 +91,7 @@ export default function LanguageSwitcher({ variant = "compact", className }) {
         </DropdownMenu>
     )
 
-    if (!block) return menu
+    if (!block) return menu // compact and field: the button alone
 
     // visible label above the button (decorative for screen readers: the
     // button's own name already says "Language")

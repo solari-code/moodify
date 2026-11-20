@@ -1,6 +1,6 @@
 import { test, describe } from "node:test"
 import assert from "node:assert/strict"
-import { validateEntryInput, normalizeHabitName, HABIT_NAME_MAX_LENGTH, HABITS_PER_ENTRY_MAX } from "../src/lib/validation.js"
+import { validateEntryInput, normalizeHabitName, normalizeDisplayName, HABIT_NAME_MAX_LENGTH, HABITS_PER_ENTRY_MAX, DISPLAY_NAME_MAX_LENGTH, LIMITS } from "../src/lib/validation.js"
 
 const now = new Date("2024-05-10T12:00:00Z")
 const valid = { date: "2024-05-10", mood: 7, habits: ["Read"] }
@@ -74,5 +74,41 @@ describe("normalizeHabitName", () => {
         assert.equal(normalizeHabitName(5).error, "habitNameNotText")
         assert.ok(normalizeHabitName("x".repeat(HABIT_NAME_MAX_LENGTH)).name)
         assert.equal(normalizeHabitName("x".repeat(HABIT_NAME_MAX_LENGTH + 1)).error, "habitNameTooLong")
+    })
+})
+
+describe("normalizeDisplayName", () => {
+    test("trims and collapses whitespace (also line breaks and tabs)", () => {
+        assert.deepEqual(normalizeDisplayName("  Ada   Lovelace "), { name: "Ada Lovelace" })
+        assert.deepEqual(normalizeDisplayName("Ada\n\tLovelace"), { name: "Ada Lovelace" })
+    })
+
+    test("keeps letters of any language and emojis", () => {
+        assert.deepEqual(normalizeDisplayName("Zoë Müller-Núñez 🌱"), { name: "Zoë Müller-Núñez 🌱" })
+    })
+
+    test("empty or only spaces means: no name of its own (null)", () => {
+        assert.deepEqual(normalizeDisplayName(""), { name: null })
+        assert.deepEqual(normalizeDisplayName("   "), { name: null })
+    })
+
+    test("at most 50 characters (after trimming)", () => {
+        assert.equal(DISPLAY_NAME_MAX_LENGTH, 50)
+        assert.equal(LIMITS.maxNameLength, 50)
+        assert.deepEqual(normalizeDisplayName("x".repeat(50)), { name: "x".repeat(50) })
+        assert.deepEqual(normalizeDisplayName(`  ${"x".repeat(50)}  `), { name: "x".repeat(50) })
+        assert.deepEqual(normalizeDisplayName("x".repeat(51)), { error: "displayNameTooLong" })
+    })
+
+    test("rejects control characters", () => {
+        assert.deepEqual(normalizeDisplayName("Ada\u0000"), { error: "displayNameInvalid" })
+        assert.deepEqual(normalizeDisplayName("Ada\u0007"), { error: "displayNameInvalid" })
+        assert.deepEqual(normalizeDisplayName("Ada\u009F"), { error: "displayNameInvalid" })
+    })
+
+    test("rejects anything that isn't text", () => {
+        for (const value of [undefined, null, 42, {}, ["Ada"]]) {
+            assert.deepEqual(normalizeDisplayName(value), { error: "displayNameNotText" }, String(value))
+        }
     })
 })

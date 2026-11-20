@@ -38,7 +38,8 @@ export default function MoodChart({ entries, todayKey, onSelectDay, titleAs = "h
     }))
 
     const chartConfig = {
-        mood: { label: t("dailyMood"), color: "hsl(var(--muted-foreground) / 0.45)" },
+        // daily line: --mood-line (3:1 on the card, see globals.css)
+        mood: { label: t("dailyMood"), color: "hsl(var(--mood-line))" },
         average: { label: t("average"), color: "hsl(var(--primary))" },
     }
 

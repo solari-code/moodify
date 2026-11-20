@@ -5,19 +5,22 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
+        // Hover: hover:bg-tint (globals.css) keeps the label's contrast.
+        // Disabled buttons use the muted colors instead of a lower opacity,
+        // so their text stays readable (faded text would be below 2:1).
+        default: "bg-primary text-primary-foreground shadow-sm hover:bg-tint disabled:bg-muted disabled:text-muted-foreground disabled:shadow-none",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground shadow-sm hover:bg-tint disabled:bg-muted disabled:text-muted-foreground disabled:shadow-none",
         outline:
-          "border border-input bg-card hover:bg-accent hover:text-accent-foreground",
+          "border border-input bg-card hover:bg-accent hover:text-accent-foreground disabled:text-muted-foreground",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 disabled:bg-muted disabled:text-muted-foreground",
+        ghost: "hover:bg-accent hover:text-accent-foreground disabled:text-muted-foreground",
+        link: "text-primary underline-offset-4 hover:underline disabled:text-muted-foreground",
       },
       size: {
         default: "h-10 px-4 py-2",

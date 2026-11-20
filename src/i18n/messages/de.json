@@ -10,6 +10,9 @@
     },
     "dashboard": {
       "title": "Dashboard"
+    },
+    "settings": {
+      "title": "Profileinstellungen"
     }
   },
   "common": {
@@ -30,6 +33,7 @@
     "openMenu": "Navigationsmenü öffnen",
     "menuDescription": "Navigation und Konto",
     "openUserMenu": "Benutzermenü öffnen",
+    "settings": "Profileinstellungen",
     "signOut": "Abmelden"
   },
   "signIn": {
@@ -189,6 +193,7 @@
     "unsaved": {
       "title": "Ungespeicherte Änderungen verwerfen?",
       "description": "Dein Check-in für {day} ist noch nicht gespeichert. Wenn du jetzt den Tag wechselst, gehen diese Änderungen verloren.",
+      "descriptionLeave": "Dein Check-in für {day} ist noch nicht gespeichert. Wenn du diese Seite jetzt verlässt, gehen diese Änderungen verloren.",
       "discard": "Änderungen verwerfen",
       "keep": "Weiter bearbeiten"
     },
@@ -271,8 +276,8 @@
     },
     "heatmap": {
       "title": "Gewohnheits-Aktivität",
-      "description": "Jedes Kästchen ist ein Tag: Je dunkler, desto mehr Gewohnheiten hast du geschafft.",
-      "descriptionClickable": "Jedes Kästchen ist ein Tag: Je dunkler, desto mehr Gewohnheiten hast du geschafft. Klick auf einen Tag, um ihn zu öffnen.",
+      "description": "Jedes Kästchen ist ein Tag: Je kräftiger die Farbe, desto mehr Gewohnheiten hast du geschafft.",
+      "descriptionClickable": "Jedes Kästchen ist ein Tag: Je kräftiger die Farbe, desto mehr Gewohnheiten hast du geschafft. Klick auf einen Tag, um ihn zu öffnen.",
       "filterLabel": "Gewohnheit anzeigen",
       "allHabits": "Alle Gewohnheiten",
       "gridLabel": "Gewohnheits-Aktivität, letzte 12 Monate",
@@ -304,6 +309,63 @@
     },
     "doneHabits": "✓ {habits}"
   },
+  "settings": {
+    "title": "Profileinstellungen",
+    "intro": "Richte dein Profil ein und gestalte Moodify so, wie es zu dir passt.",
+    "backToDashboard": "Zurück zum Dashboard",
+    "profile": {
+      "title": "Profil",
+      "description": "So spricht Moodify dich an. Nur du siehst deinen Namen.",
+      "nameLabel": "Name",
+      "hint": "Erscheint in der Begrüßung und im Menü. Lass das Feld leer, um den Namen deines Kontos zu verwenden ({accountName}).",
+      "hintNoAccountName": "Erscheint in der Begrüßung und im Menü. Lass das Feld leer, um ohne Namen begrüßt zu werden.",
+      "save": "Speichern",
+      "saving": "Speichern…",
+      "saved": "Gespeichert"
+    },
+    "appearance": {
+      "title": "Darstellung",
+      "description": "So sieht dein Dashboard auf diesem Gerät aus. Die Startseite behält immer ihr helles Salbei-Design.",
+      "theme": "Farbthema",
+      "themes": {
+        "sage": {
+          "label": "Salbei",
+          "hint": "Ruhiges Grün"
+        },
+        "ocean": {
+          "label": "Ozean",
+          "hint": "Kühles Blau"
+        },
+        "dusk": {
+          "label": "Dämmerung",
+          "hint": "Sanftes Violett"
+        },
+        "clay": {
+          "label": "Terrakotta",
+          "hint": "Warme Erdtöne"
+        }
+      },
+      "colorMode": "Farbmodus",
+      "modes": {
+        "light": {
+          "label": "Hell",
+          "hint": "Immer hell"
+        },
+        "dark": {
+          "label": "Dunkel",
+          "hint": "Immer dunkel"
+        },
+        "system": {
+          "label": "System",
+          "hint": "Folgt der Einstellung deines Geräts"
+        }
+      }
+    },
+    "language": {
+      "title": "Sprache",
+      "description": "Texte, Datumsangaben und Zahlen in Moodify richten sich nach dieser Sprache. Sie gilt auch auf der Startseite."
+    }
+  },
   "errors": {
     "localModeOnly": "Demodaten gibt es nur im lokalen Modus",
     "invalidToday": "Ungültiges Datum für heute",
@@ -322,6 +384,10 @@
     "addHabitFailed": "Die Gewohnheit konnte nicht hinzugefügt werden. Bitte versuch es noch einmal.",
     "removeHabitFailed": "Die Gewohnheit konnte nicht entfernt werden. Bitte versuch es noch einmal.",
     "loadDemoFailed": "Die Demodaten konnten nicht geladen werden. Bitte versuch es noch einmal.",
+    "displayNameNotText": "Der Name muss ein Text sein",
+    "displayNameInvalid": "Der Name enthält Zeichen, die nicht erlaubt sind",
+    "displayNameTooLong": "Dein Name darf höchstens {maxNameLength, plural, one {# Zeichen} other {# Zeichen}} lang sein",
+    "saveNameFailed": "Dein Name konnte nicht gespeichert werden. Bitte versuch es noch einmal.",
     "unknown": "Etwas ist schiefgelaufen. Bitte versuch es noch einmal."
   },
   "moodLabels": {
